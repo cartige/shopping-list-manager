@@ -1,0 +1,23 @@
+.nav-bar-home-container {
+  .nav-bar-home {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100vw;
+    gap: 1rem;
+    height: 8vh;
+    background-color: $color-accent;
+
+    .nav-home-link {
+      padding: 1rem;
+      cursor: pointer;
+      color: $color-accent-contrast;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-bar-home-container {
+    display: none;
+  }
+}

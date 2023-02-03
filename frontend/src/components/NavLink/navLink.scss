@@ -1,0 +1,18 @@
+
+.nav-link {
+
+  color: currentColor;
+  li{
+    color: currentColor;
+  }
+}
+
+.nav-link.inactive {
+  text-underline: none;
+  text-decoration: none;
+}
+
+.nav-link.active {
+  text-underline: $color-text;
+  font-weight: bold;
+}

@@ -1,0 +1,19 @@
+.panel-switcher {
+  width: 100%;
+  overflow: hidden;
+  .panels {
+    width: 200vw;
+    display: flex;
+    flex-direction: row;
+    transition: all 100ms ease-in-out;
+    transform: translateX(0);
+    &.open{
+      transform: translateX(-50%);
+    }
+    .panel{
+      display: flex;
+      width: 100vw;
+    }
+  }
+
+}

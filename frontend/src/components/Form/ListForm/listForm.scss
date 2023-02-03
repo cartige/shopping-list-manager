@@ -1,0 +1,26 @@
+.list-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  .input-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .input-name-list {
+      margin-left: 10%;
+    }
+
+    .input-list-form {
+      margin: 0 auto;
+    }
+  }
+
+  .recipe-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,13 @@
+html{
+  font-size: 16px;
+
+}
+
+ *, body{
+  font-family: $font-family;
+  font-size: $font-size;
+  margin: 0;
+  color: $color-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

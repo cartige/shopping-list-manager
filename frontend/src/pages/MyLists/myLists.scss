@@ -1,0 +1,84 @@
+.my-lists {
+  position: relative;
+
+  .body-mylists {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    margin-top: 5rem;
+
+    .shopping-list {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      width: 100%;
+      padding: 1rem;
+    }
+
+    .list-details {
+      display: flex;
+      flex: 1;
+      background-color: $color-secondary;
+      position: relative;
+      max-width: 50vw;
+      margin: 0 auto;
+
+      .list-ingredients {
+        margin: 0 auto;
+        padding: 1rem;
+        .ingredient-name {
+          color: $color-text-contrast;
+        }
+      }
+
+      .arrow-list-close {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 2rem;
+        transition: all 500ms ease-in-out;
+      }
+    }
+  }
+  .main-button {
+    width: fit-content;
+    padding: 0.5rem;
+    border-radius: 1rem;
+    margin: 0 auto;
+    cursor: pointer;
+    padding: 1rem;
+    font-size: 1.5rem;
+  }
+
+  .log-out-mobile {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .my-lists {
+    height: 100vh;
+    .body-mylists {
+      .shopping-list {
+        flex-direction: column;
+        align-items: center;
+        min-height: 70vh;
+        justify-content: flex-start;
+      }
+
+      .list-details {
+        max-width: 100vw;
+      }
+    }
+
+    .log-out-mobile {
+      display: initial;
+      position: absolute;
+      top: 19px;
+      right: 30px;
+      font-size: 2rem;
+    }
+  }
+}

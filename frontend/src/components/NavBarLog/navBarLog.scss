@@ -1,0 +1,38 @@
+.nav-bar-container {
+  position: relative;
+  width: 100vw;
+  .nav-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    height: $navbar-height;
+    background-color: $color-accent;
+    color: $color-accent-contrast;
+    padding: 5px 15px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .nav-bar {
+      position: fixed;
+      justify-content: space-around;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: $navbar-height;
+      gap: 0;
+      z-index: $z-nav;
+
+      .nav-links {
+        flex: 1;
+        border-radius: 0;
+        font-size: 1.5rem;
+        width: 100%;
+      }
+
+      .log-out {
+        display: none;
+      }
+    }
+  }
+}

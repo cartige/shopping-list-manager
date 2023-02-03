@@ -1,0 +1,53 @@
+//ZZZZzzzz
+$z-nav: 10;
+
+//colors
+$color-text: #444444;
+$color-text-contrast: #eeeeee;
+
+$color-accent: #000000;
+$color-accent-contrast: #ffffff;
+
+$color-secondary: #a1a1a1;
+$color-secondary-contrast: #333333;
+
+$color-error: #ff0000;
+$color-error-contrast: #ffffff;
+
+//font
+$font-size: 1rem;
+$font-size-l: calc($font-size * 1.4);
+$font-size-s: calc($font-size * 0.8);
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+  "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+//navbar
+$navbar-height: 8vh;
+
+//box
+$box-border-radius: 4px;
+$box-background-color: #ffffff;
+$box-border: solid 1px #a1a1a1;
+
+//recipe
+$recipe-card-min-width: 220px;
+$recipe-card-min-height: 220px;
+$recipe-card-background-color: $color-secondary;
+
+//buttons
+$button-color: $color-text;
+$button-border-radius: 4px;
+$button-background-color: #ffffff;
+$button-border: solid 1px #a1a1a1;
+
+$button-color-active: $color-text;
+$button-background-color-active: #f7f7f7;
+$button-border-active: solid 1px #a1a1a1;
+
+$button-color-disabled: #dddddd;
+$button-border-disabled: solid 1px #dddddd;
+
+//inputs
+$input-border-radius: 4px;
+$input-background-color: #ffffff;
+$input-border: solid 1px #a1a1a1;

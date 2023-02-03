@@ -1,0 +1,40 @@
+
+.button {
+  background-color: $button-background-color;
+  font-size: $font-size-s;
+  border: $button-border;
+  border-radius: $button-border-radius;
+  box-sizing: border-box;
+  color: $button-color;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  outline: none;
+  padding: 7px 12px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow .2s, -ms-transform .1s, -webkit-transform .1s, transform .1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+.button:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow .2s;
+}
+
+.button:active {
+  background-color: $button-background-color-active;
+  border: $button-border-active;
+  transform: scale(.96);
+}
+
+.button:disabled {
+  border: $button-border-disabled;
+  color: $button-color-disabled;
+  cursor: not-allowed;
+  opacity: 1;
+}
