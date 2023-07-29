@@ -45,6 +45,11 @@
     font-size: 1.5rem;
   }
 
+  .main-button:hover {
+    background-color: $color-accent;
+    color: $box-background-color;
+  }
+
   .log-out-mobile {
     display: none;
   }
@@ -54,6 +59,9 @@
   .my-recipes {
     height: 100vh;
     .body-myrecipes {
+      .hide {
+        display: none;
+      }
       .recipes-list {
         flex-direction: column;
         align-items: center;

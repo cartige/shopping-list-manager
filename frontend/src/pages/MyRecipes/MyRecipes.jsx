@@ -11,13 +11,16 @@ import NavBarLog from "../../components/NavBarLog/NavBarLog";
 import Recipe from "../../components/Recipe/Recipe";
 import Modal from "../../components/Modal/Modal";
 import UserContext from "../../contexts/UserContext";
+import RecipesContext from "../../contexts/RecipesContext";
 import RecipeForm from "../../components/Form/RecipeForm/RecipeForm";
 import useModal from "../../components/useModal/useModal";
 
 export default function MyRecipes() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
+  const { recipes } = useContext(RecipesContext);
   const { isShowing: showForm, toggle: toggleForm } = useModal();
   const [selectedRecipe, setSelectedRecipe] = useState();
+  const [selectedMyRecipe, setSelectedMyRecipe] = useState();
   const [myRecipes, setMyRecipes] = useState([]);
   const navigate = useNavigate();
 
@@ -51,17 +54,47 @@ export default function MyRecipes() {
         <Button type="button" className="main-button" onClick={toggleForm}>
           Ajouter un plat
         </Button>
-        <PanelSwitcher open={!!selectedRecipe}>
+        <PanelSwitcher open={!!selectedMyRecipe} isDisabled={!!selectedRecipe}>
           <div className="recipes-list">
-            {myRecipes.map((myRecipe) => {
+            {myRecipes.map((recipe) => {
               return (
                 <Recipe
-                  key={myRecipe.id}
-                  onClick={() => setSelectedRecipe(myRecipe)}
-                  recipe={myRecipe}
+                  key={recipe.id}
+                  onClick={() => setSelectedMyRecipe(recipe)}
+                  recipe={recipe}
                   display
                 />
               );
+            })}
+          </div>
+
+          {selectedMyRecipe && (
+            <div className="recipe-details">
+              <BsArrowLeftCircle
+                className="arrow-recipe-close"
+                onClick={() => setSelectedMyRecipe(null)}
+              />
+              <div className="recipe-details-container">
+                <img
+                  src={selectedMyRecipe.img}
+                  alt="recipe-img"
+                  className="recipe-img"
+                />
+              </div>
+            </div>
+          )}
+        </PanelSwitcher>
+        <PanelSwitcher open={!!selectedRecipe} isDisabled={!!selectedMyRecipe}>
+          <div className="recipes-list">
+            {recipes.map((recipe) => {
+              return recipe.isPublic ? (
+                <Recipe
+                  key={recipe.id}
+                  onClick={() => setSelectedRecipe(recipe)}
+                  recipe={recipe}
+                  display
+                />
+              ) : null;
             })}
           </div>
 

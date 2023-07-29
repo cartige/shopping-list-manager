@@ -7,13 +7,12 @@
     flex-direction: row;
     transition: all 100ms ease-in-out;
     transform: translateX(0);
-    &.open{
+    &.open {
       transform: translateX(-50%);
     }
-    .panel{
+    .panel {
       display: flex;
       width: 100vw;
     }
   }
-
 }

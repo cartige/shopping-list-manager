@@ -3,7 +3,7 @@ import { PropTypes } from "prop-types";
 import "./recipe.scss";
 
 export default function Recipe({ recipe, onClick, display }) {
-  return (
+  return recipe ? (
     <div onClick={onClick} className="recipe-card" role="presentation">
       <div className="recipe-img-container">
         <img src={recipe.img} alt="recipe-img" className="recipe-img" />
@@ -13,7 +13,7 @@ export default function Recipe({ recipe, onClick, display }) {
         {display ? <BsArrowRightCircle className="arrow-recipe" /> : ""}
       </div>
     </div>
-  );
+  ) : null;
 }
 
 Recipe.propTypes = {
@@ -21,11 +21,14 @@ Recipe.propTypes = {
     id: PropTypes.number,
     name: PropTypes.string,
     img: PropTypes.string,
-    ingredients: PropTypes.shape({
-      id: PropTypes.number,
-      name: PropTypes.string,
-      type: PropTypes.string,
-    }),
+    isPublic: PropTypes.bool,
+    ingredients: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number,
+        name: PropTypes.string,
+        type: PropTypes.string,
+      })
+    ),
   }),
   onClick: PropTypes.func,
   display: PropTypes.bool.isRequired,

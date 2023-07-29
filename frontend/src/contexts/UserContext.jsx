@@ -1,10 +1,12 @@
-import { createContext, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useEffect } from "react";
 import { PropTypes } from "prop-types";
+import axios from "axios";
 // import swal from "sweetalert";
 
 const UserContext = createContext({
   currentUser: {},
 });
+
 export default UserContext;
 
 export function UserInfosContext({ children }) {

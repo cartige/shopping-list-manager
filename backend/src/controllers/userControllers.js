@@ -18,12 +18,12 @@ const add = async (req, res) => {
 
   // TODO validations (length, format...)
 
-  user.password = await argon2.hash(user.password, {
-    type: argon2.argon2id,
-    timeCost: 2,
-    memoryCost: 2 ** 16,
-    parallelism: 1,
-  });
+  // user.password = await argon2.hash(user.password, {
+  //   type: argon2.argon2id,
+  //   timeCost: 2,
+  //   memoryCost: 2 ** 16,
+  //   parallelism: 1,
+  // });
 
   model
     .insertUser(user)

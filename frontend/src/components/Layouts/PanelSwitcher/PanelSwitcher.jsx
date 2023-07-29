@@ -1,8 +1,8 @@
 import "./panelSwitcher.scss";
 import PropTypes from "prop-types";
 
-export default function PanelSwitcher({ open, children }) {
-  return (
+export default function PanelSwitcher({ open, children, isDisabled }) {
+  return isDisabled ? null : (
     <div className="panel-switcher">
       <div className={open ? "panels open" : "panels"}>
         <section className="panel">{children[0]}</section>
@@ -14,6 +14,7 @@ export default function PanelSwitcher({ open, children }) {
 
 PanelSwitcher.propTypes = {
   open: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

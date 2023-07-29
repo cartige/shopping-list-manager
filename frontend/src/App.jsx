@@ -4,7 +4,6 @@ import MyRecipes from "./pages/MyRecipes/MyRecipes";
 import MyLists from "./pages/MyLists/MyLists";
 import "./reset.scss";
 import "./App.scss";
-import { UserInfosContext } from "./contexts/UserContext";
 
 function App() {
   return (

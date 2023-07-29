@@ -54,7 +54,7 @@ export default function SignInForm() {
         value={loginForm.password}
         className="input-log-form"
       />
-      <Button type="submit" name="log-in" id="log-in">
+      <Button type="submit" name="log-in" id="log-in" onClick={hLogin}>
         Connexion
       </Button>
     </form>

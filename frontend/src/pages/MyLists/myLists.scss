@@ -52,6 +52,11 @@
     font-size: 1.5rem;
   }
 
+  .main-button:hover {
+    background-color: $color-accent;
+    color: $box-background-color;
+  }
+
   .log-out-mobile {
     display: none;
   }
@@ -76,8 +81,8 @@
     .log-out-mobile {
       display: initial;
       position: absolute;
-      top: 19px;
-      right: 30px;
+      top: -42px;
+      right: 42px;
       font-size: 2rem;
     }
   }

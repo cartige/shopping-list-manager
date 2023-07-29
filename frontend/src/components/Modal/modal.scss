@@ -24,7 +24,7 @@ $font-family: Gilroy, sans-serif;
 }
 
 .modal {
-  background: linear-gradient(to right, #dadad7, #c9cfc7, #acb8b3);
+  background: $box-background-color;
   position: relative;
   margin: auto;
   border-radius: 5px;

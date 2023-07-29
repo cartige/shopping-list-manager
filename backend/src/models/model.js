@@ -6,8 +6,15 @@ const { DataTypes } = Sequelize;
 const Recipe = db.define(
   "Recipe",
   {
-    name: { type: DataTypes.STRING, unique: true, allowNull: false },
+    name: { type: DataTypes.STRING, unique: false, allowNull: false },
     picture: DataTypes.STRING,
+    isPublic: { type: DataTypes.BOOLEAN, unique: false, allowNull: false },
+    // ownerId: {
+    //   type: DataTypes.INTEGER,
+    //   unique: false,
+    //   allowNull: false,
+    //   as: "UserId",
+    // },
   },
   { tableName: "recipe" }
 );
@@ -50,8 +57,8 @@ const IngredientType = db.define(
   { tableName: "ingredient_type" }
 );
 
-User.hasMany(Recipe);
-Recipe.belongsTo(User);
+IngredientType.hasMany(Ingredient);
+Ingredient.belongsTo(IngredientType);
 
 User.hasMany(List);
 List.belongsTo(User);
@@ -60,6 +67,12 @@ const RecipeHasIngredients = db.define(
   "RecipeHasIngredients",
   {},
   { tableName: "recipe_has_ingredient" }
+);
+
+const UserHasRecipes = db.define(
+  "UserHasRecipes",
+  {},
+  { tableName: "user_has_recipe" }
 );
 
 Recipe.belongsToMany(Ingredient, {
@@ -95,6 +108,46 @@ Ingredient.hasMany(ListHasIngredients, { foreignKey: "IngredientId" });
 IngredientType.hasMany(Ingredient);
 Ingredient.belongsTo(IngredientType);
 
+// User.hasMany(Recipe);
+// Recipe.belongsTo(User);
+// UserHasRecipes.belongsToMany(User);
+// Recipe.hasMany(UserHasRecipes);
+// UserHasRecipes.belongsToMany(Recipe);
+
+User.belongsToMany(Recipe, {
+  through: UserHasRecipes,
+});
+Recipe.belongsToMany(User, {
+  through: UserHasRecipes,
+  // foreignKey: "ownerId",
+  // as: "User",
+});
+
+User.hasMany(UserHasRecipes);
+UserHasRecipes.belongsTo(User);
+Recipe.hasMany(UserHasRecipes);
+UserHasRecipes.belongsTo(Recipe);
+// User.hasMany(UserHasRecipes, { foreignKey: "UserId" });
+// Recipe.hasMany(UserHasRecipes, { foreignKey: "RecipeId" });
+
+// UserHasRecipes.hasMany(Recipe);
+// UserHasRecipes.belongsTo(User, { foreignKey: "ownerId", as: "recipeOwner" });
+// Recipe.belongsTo(UserHasRecipes);
+// User.hasMany(Recipe);
+// Recipe.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
+
+// UserHasRecipes.belongsToMany(User, {
+//   through: Recipe,
+//   foreignKey: "ownerId",
+//   as: "owner",
+// });
+// User.belongsToMany(UserHasRecipes, {
+//   through: Recipe,
+// });
+
+// Recipe.hasMany(UserHasRecipes, { foreignKey: "RecipeId" });
+// User.hasMany(UserHasRecipes, { foreignKey: "UserId" });
+
 module.exports = {
   User,
   Recipe,
@@ -103,4 +156,5 @@ module.exports = {
   IngredientType,
   RecipeHasIngredients,
   ListHasIngredients,
+  UserHasRecipes,
 };
