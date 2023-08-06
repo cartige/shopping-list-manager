@@ -1,0 +1,19 @@
+.drop-down-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  .drop-down {
+    .list-name {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  .list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+}

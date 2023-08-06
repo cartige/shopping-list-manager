@@ -9,12 +9,12 @@ const Recipe = db.define(
     name: { type: DataTypes.STRING, unique: false, allowNull: false },
     picture: DataTypes.STRING,
     isPublic: { type: DataTypes.BOOLEAN, unique: false, allowNull: false },
-    // ownerId: {
-    //   type: DataTypes.INTEGER,
-    //   unique: false,
-    //   allowNull: false,
-    //   as: "UserId",
-    // },
+    UserId: {
+      type: DataTypes.INTEGER,
+      unique: false,
+      allowNull: false,
+    },
+    description: { type: DataTypes.STRING, unique: false, allowNull: true },
   },
   { tableName: "recipe" }
 );
@@ -65,7 +65,10 @@ List.belongsTo(User);
 
 const RecipeHasIngredients = db.define(
   "RecipeHasIngredients",
-  {},
+  {
+    quantity: { type: DataTypes.INTEGER, allowNull: true, unique: false },
+    unit: { type: DataTypes.STRING, allowNull: true, unique: false },
+  },
   { tableName: "recipe_has_ingredient" }
 );
 

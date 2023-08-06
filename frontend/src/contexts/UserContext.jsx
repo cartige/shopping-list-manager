@@ -11,18 +11,44 @@ export default UserContext;
 
 export function UserInfosContext({ children }) {
   const [currentUser, setCurrentUser] = useState({
-    id: 0,
-    email: "",
-    firstname: "",
-    lastname: "",
+    token: "",
+    user: {
+      id: undefined,
+      email: "",
+      firstname: "",
+      lastname: "",
+      createdAt: "",
+      updatedAt: "",
+    },
   });
+  const [myRecipes, setMyRecipes] = useState([]);
+
+  useEffect(() => {
+    console.log(currentUser);
+    if (currentUser.user && currentUser.user.id) {
+      const {
+        user: { id },
+      } = currentUser;
+      axios
+        .get(`${import.meta.env.VITE_BACKEND_URL}/recipes?userId=${id}`)
+        .then(({ data }) => {
+          console.log(data, "data");
+          setMyRecipes(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [currentUser]);
 
   const context = useMemo(
     () => ({
       currentUser,
+      myRecipes,
       setCurrentUser,
+      setMyRecipes,
     }),
-    [currentUser, setCurrentUser]
+    [currentUser, myRecipes, setCurrentUser, setMyRecipes]
   );
   return (
     <UserContext.Provider value={context}>{children}</UserContext.Provider>

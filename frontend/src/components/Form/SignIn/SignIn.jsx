@@ -32,6 +32,7 @@ export default function SignInForm() {
         console.error(err);
       });
   };
+
   return (
     <form action="log" className="log-form appear-stage" onSubmit={hLogin}>
       <label htmlFor="email" name="email">

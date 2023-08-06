@@ -22,7 +22,9 @@ export default function NavBarHome() {
         </li>
       </ul>
       <Modal isShowing={showLog} hide={toggleLog} title="Connexion">
-        <SignInForm />
+        <div>
+          <SignInForm />
+        </div>
       </Modal>
     </nav>
   );

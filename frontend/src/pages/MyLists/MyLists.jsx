@@ -21,12 +21,13 @@ export default function MyLists() {
   const navigate = useNavigate();
 
   const mapIngredients = (myList) => {
-    const myIngredients = [];
+    // const myIngredients = [];
     const { ingredients } = myList;
-    ingredients.forEach((ingredient) => {
-      myIngredients.push(ingredient);
-    });
-    return myIngredients;
+    // ingredients.forEach((ingredient) => {
+    //   myIngredients.push(ingredient);
+    // });
+    return ingredients.map((ingredient) => ingredient);
+    // return myIngredients;
   };
 
   const exLists = [
@@ -67,7 +68,7 @@ export default function MyLists() {
         <Button type="button" className="main-button" onClick={toggleForm}>
           Créer une liste
         </Button>
-        <PanelSwitcher open={!!selectedList}>
+        <PanelSwitcher open={!!selectedList} isDisabled={false}>
           <div className="shopping-list">
             {exLists.map((list) => {
               const ingredients = mapIngredients(list);

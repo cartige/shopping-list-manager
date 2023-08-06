@@ -1,27 +1,65 @@
 .recipe-form {
-  .input-recipe-container {
+  width: 80vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  .input-img-container {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
+    justify-content: space-around;
     gap: 1rem;
-    margin-top: 1rem;
+    // margin-top: 1rem;
+    max-height: 25%;
+    height: 25%;
+    background-color: rgb(55, 53, 53);
+    background-size: cover;
+    align-items: center;
 
     .input-name-recipe {
-      margin-left: 10%;
+      width: fit-content;
+      height: fit-content;
     }
     .input-recipe-form {
       margin: 0 auto;
+      height: 10%;
     }
   }
-  .ingredient-list-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.7rem;
-    margin-top: 1rem;
 
-    .checkbox-container {
+  .recipe-form-body {
+    display: flex;
+    justify-content: space-around;
+
+    .ingredient-list-form-container {
+      border: thin solid black;
+      border-radius: 1rem;
+      padding: 1.3rem;
+      width: 35%;
+      height: 25rem;
+      overflow-y: scroll;
+      .ingredient-list-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        gap: 0.7rem;
+        margin-top: 1rem;
+
+        .checkbox-container {
+          display: flex;
+          gap: 0.2rem;
+        }
+      }
+
+      .add-ingredient-form {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .recipe-steps-container {
       display: flex;
-      gap: 0.2rem;
+      flex-direction: column;
+      width: 40%;
     }
   }
 
@@ -29,6 +67,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 1rem 0;
   }
 }

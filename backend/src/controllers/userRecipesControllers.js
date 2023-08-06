@@ -1,7 +1,7 @@
 const model = require("../models/UserRecipeManager");
 
 const add = (req, res) => {
-  const { userId, recipeId } = req.body;
+  const { userId, recipeId } = req.params;
 
   model
     .insertRecipeUser(userId, recipeId)
@@ -16,7 +16,7 @@ const add = (req, res) => {
 };
 
 const del = (req, res) => {
-  const { userId, recipeId } = req.body;
+  const { userId, recipeId } = req.params;
 
   model
     .deleteRecipeUser(userId, recipeId)

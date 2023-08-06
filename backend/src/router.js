@@ -30,8 +30,8 @@ router.post("/lists", listControllers.add);
 router.get("/ingredients", ingredientControllers.browse);
 router.post("/ingredients", ingredientControllers.add);
 
-router.post("/user/recipes", userRecipeControllers.add);
-router.delete("/user/recipes", userRecipeControllers.del);
+router.post("/user/:userId/recipes/:recipeId", userRecipeControllers.add);
+router.delete("/user/:userId/recipes/:recipeId", userRecipeControllers.del);
 
 router.use(passport.authenticate("jwt"), (req, res, next) => {
   delete req.user.password;

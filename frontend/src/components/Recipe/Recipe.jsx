@@ -2,9 +2,16 @@ import { BsArrowRightCircle } from "react-icons/bs";
 import { PropTypes } from "prop-types";
 import "./recipe.scss";
 
-export default function Recipe({ recipe, onClick, display }) {
+export default function Recipe({ recipe, onClick, display, isMakingList }) {
+  const isSelected = recipe.isSelected ? "selected" : "not-selected";
+  const className = isMakingList ? isSelected : "";
+  console.log(recipe);
   return recipe ? (
-    <div onClick={onClick} className="recipe-card" role="presentation">
+    <div
+      onClick={onClick}
+      className={`recipe-card ${className}`}
+      role="presentation"
+    >
       <div className="recipe-img-container">
         <img src={recipe.img} alt="recipe-img" className="recipe-img" />
       </div>
@@ -22,19 +29,25 @@ Recipe.propTypes = {
     name: PropTypes.string,
     img: PropTypes.string,
     isPublic: PropTypes.bool,
+    isSelected: PropTypes.bool,
+    description: PropTypes.string,
     ingredients: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,
         name: PropTypes.string,
         type: PropTypes.string,
+        quantity: PropTypes.number,
+        unit: PropTypes.string,
       })
     ),
   }),
   onClick: PropTypes.func,
   display: PropTypes.bool.isRequired,
+  isMakingList: PropTypes.bool,
 };
 
 Recipe.defaultProps = {
   recipe: {},
   onClick: null,
+  isMakingList: false,
 };

@@ -1,11 +1,12 @@
 const model = require("../models/RecipeManager");
+const userRecipeModel = require("../models/UserRecipeManager");
 
 const browse = (req, res) => {
   const { userId, owned } = req.query;
   model
     .getAllRecipes(userId, owned)
-    .then((result) => {
-      res.send(result).status(201);
+    .then((recipes) => {
+      res.send(recipes).status(201);
     })
     .catch((err) => {
       console.error(err);
@@ -30,14 +31,21 @@ const add = (req, res) => {
   const recipe = req.body;
 
   // TODO validations (length, format...)
-  console.log(recipe);
+  console.log(recipe, "recipe add");
 
   model
     .insertRecipe(recipe)
     .then((recipeInserted) => {
       // const recipeInserted = dataValues;
       console.log(recipeInserted);
-      res.send(recipeInserted).status(201);
+      userRecipeModel
+        .insertRecipeUser(recipeInserted.UserId, recipeInserted.id)
+        .then(() => {
+          res.send(recipeInserted).status(200);
+        })
+        .catch((err) => {
+          res.send(err).status(500);
+        });
     })
     .catch((err) => {
       console.error(err);

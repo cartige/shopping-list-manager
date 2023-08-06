@@ -1,0 +1,24 @@
+.item-info-container {
+  display: flex;
+  align-items: center;
+  margin-left: 24px;
+  gap: 4px;
+  cursor: pointer;
+  .item-name {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: black;
+  }
+  // .unit-input {
+  //   height: fit-content;
+  // }
+  .quantity-input {
+    width: 3rem;
+    height: fit-content;
+  }
+
+  .icon {
+    margin-left: 8px;
+  }
+}

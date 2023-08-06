@@ -20,7 +20,7 @@ const add = (req, res) => {
   model
     .insertIngredient(ingredient)
     .then((ingredientAdded) => {
-      res.location(`/items/${ingredientAdded.insertId}`).sendStatus(201);
+      res.send(ingredientAdded).status(200);
     })
     .catch((err) => {
       console.error(err);
