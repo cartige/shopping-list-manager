@@ -1,0 +1,24 @@
+.list-validation-container {
+  width: 80vw;
+  .list-validation-title {
+    text-align: center;
+    font-size: 1.5rem;
+    padding: 1rem;
+    font-weight: bold;
+  }
+
+  .final-list-name {
+    font-size: 2rem;
+  }
+
+  .list-validation-details {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    gap: 3rem;
+
+    .list-validation-detail-container {
+      padding: 1rem;
+    }
+  }
+}

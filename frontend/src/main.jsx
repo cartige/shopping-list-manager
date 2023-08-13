@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { UserInfosContext } from "./contexts/UserContext";
 import { RecipesInfosContext } from "./contexts/RecipesContext";
+import { ListsInfosContext } from "./contexts/ListsContext";
+import { IngredientsInfosContext } from "./contexts/IngredientsContext";
 
 import App from "./App";
 
@@ -11,7 +13,11 @@ root.render(
   <React.StrictMode>
     <UserInfosContext>
       <RecipesInfosContext>
-        <App />
+        <ListsInfosContext>
+          <IngredientsInfosContext>
+            <App />
+          </IngredientsInfosContext>
+        </ListsInfosContext>
       </RecipesInfosContext>
     </UserInfosContext>
   </React.StrictMode>

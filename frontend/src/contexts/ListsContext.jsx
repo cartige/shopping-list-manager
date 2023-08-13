@@ -1,14 +1,21 @@
-import { useContext, useEffect, useState } from "react";
-import "./listValidation.scss";
-import PropTypes from "prop-types";
-import ListValidationDetails from "./ListValidationDetails/ListValidationDetails";
-import ListsContext from "../../contexts/ListsContext";
+import { createContext, useState, useMemo, useEffect, useContext } from "react";
+import { PropTypes } from "prop-types";
+import axios from "axios";
+import UserContext from "./UserContext";
 
-export default function ListValidation({ isDisplay }) {
-  const { listForm, setListForm } = useContext(ListsContext);
-  const [editingIngredients, setEditingIngredients] = useState(
-    listForm.ingredients
-  );
+const ListsContext = createContext({
+  myLists: [],
+});
+export default ListsContext;
+
+export function ListsInfosContext({ children }) {
+  const [myLists, setMyLists] = useState([]);
+  const { currentUser } = useContext(UserContext);
+  const [listForm, setListForm] = useState({
+    UserId: undefined,
+    name: "",
+    ingredients: [],
+  });
 
   const mapIngredientsByType = (ingredientsToMap) => {
     const ingredientByTypes = [];
@@ -25,6 +32,7 @@ export default function ListValidation({ isDisplay }) {
         currentType.name = ingredient.type.name;
         currentType.id = ingredient.type.id;
         currentType.ingredients.push(ingredient);
+        // currentType = { ...currentType, ingredients };
       } else {
         currentType.name = ingredient.type.name;
         currentType.id = ingredient.type.id;
@@ -88,54 +96,51 @@ export default function ListValidation({ isDisplay }) {
   };
 
   useEffect(() => {
-    if (isDisplay) {
-      const ingredientsGrouped = groupIngredientByUnitAndQuantity(
-        listForm.ingredients
-      );
-      const ingredientByTypes = mapIngredientsByType(ingredientsGrouped);
-
-      setListForm({
-        ...listForm,
-        ingredientByTypes,
-        ingredients: ingredientsGrouped,
-      });
+    if (currentUser.user && currentUser.user.id) {
+      const {
+        user: { id },
+      } = currentUser;
+      setListForm({ ...listForm, UserId: id });
+      axios
+        .get(`${import.meta.env.VITE_BACKEND_URL}/lists/${id}`)
+        .then(({ data }) => {
+          setMyLists(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
-  }, [isDisplay]);
+  }, [currentUser, listForm.ingredients]);
 
   useEffect(() => {
-    if (isDisplay) {
-      const ingredientByTypes = mapIngredientsByType(editingIngredients);
-      setListForm({ ...listForm, ingredientByTypes });
-      setListForm({ ...listForm, ingredients: editingIngredients });
-    }
-  }, [editingIngredients]);
+    setListForm({
+      ...listForm,
+      ingredientByTypes: mapIngredientsByType(
+        groupIngredientByUnitAndQuantity(listForm.ingredients)
+      ),
+    });
+  }, [listForm.ingredients]);
+
+  console.log(listForm);
+  const context = useMemo(
+    () => ({
+      myLists,
+      listForm,
+      setMyLists,
+      setListForm,
+    }),
+    [myLists, listForm, setListForm, setMyLists]
+  );
+  console.log(myLists);
 
   return (
-    <div className="list-validation-container">
-      <h1 className="list-validation-title">Récapitulatif</h1>
-
-      <h2 className="final-list-name">{listForm.name}</h2>
-
-      <div>
-        <ul className="list-validation-details">
-          {listForm.ingredientByTypes.map((type) => {
-            const { id } = type;
-            return (
-              <div key={id} className="list-validation-detail-container">
-                <ListValidationDetails
-                  ingredientByType={type}
-                  ingredients={editingIngredients}
-                  setIngredients={setEditingIngredients}
-                />
-              </div>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
+    <ListsContext.Provider value={context}>{children}</ListsContext.Provider>
   );
 }
 
-ListValidation.propTypes = {
-  isDisplay: PropTypes.bool.isRequired,
+ListsInfosContext.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]).isRequired,
 };

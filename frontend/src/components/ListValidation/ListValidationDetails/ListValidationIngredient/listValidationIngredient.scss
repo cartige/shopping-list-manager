@@ -1,0 +1,40 @@
+.ingredient-detail-container {
+  position: relative;
+  .ingredient-detail {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+
+    .ingredient-name {
+    }
+
+    .ingredient-quantity {
+      width: 3rem;
+      border: 1px solid black;
+      padding: 1px;
+    }
+
+    .display {
+      display: initial;
+    }
+
+    .no-display {
+      display: none;
+    }
+  }
+
+  .disable {
+    color: red;
+  }
+
+  .not-diable {
+    color: initial;
+  }
+
+  .line-through {
+    border: 1px solid black;
+    width: 100%;
+    position: absolute;
+    top: 10px;
+  }
+}

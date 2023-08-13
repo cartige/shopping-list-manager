@@ -2,25 +2,28 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  .input-list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-top: 1rem;
+  .list-creation {
+    width: 80vw;
+    .input-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
 
-    .input-name-list {
-      margin-left: 10%;
+      .input-name-list {
+        margin-left: 10%;
+      }
+
+      .input-list-form {
+        margin: 0 auto;
+      }
     }
 
-    .input-list-form {
-      margin: 0 auto;
+    .recipe-list {
+      display: flex;
+      flex-flow: row wrap;
+      gap: 1rem;
+      justify-content: center;
     }
-  }
-
-  .recipe-list {
-    display: flex;
-    flex-flow: row wrap;
-    gap: 1rem;
-    justify-content: center;
   }
 }

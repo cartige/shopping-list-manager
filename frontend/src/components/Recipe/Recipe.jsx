@@ -5,7 +5,7 @@ import "./recipe.scss";
 export default function Recipe({ recipe, onClick, display, isMakingList }) {
   const isSelected = recipe.isSelected ? "selected" : "not-selected";
   const className = isMakingList ? isSelected : "";
-  console.log(recipe);
+
   return recipe ? (
     <div
       onClick={onClick}
@@ -15,6 +15,7 @@ export default function Recipe({ recipe, onClick, display, isMakingList }) {
       <div className="recipe-img-container">
         <img src={recipe.img} alt="recipe-img" className="recipe-img" />
       </div>
+
       <div className="recipe-card-text">
         <h2>{recipe.name}</h2>
         {display ? <BsArrowRightCircle className="arrow-recipe" /> : ""}

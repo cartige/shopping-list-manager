@@ -1,0 +1,13 @@
+.list-ingredient-by-type-container {
+  display: flex;
+  flex-flow: column;
+  .list-type {
+    font-size: 1.2rem;
+    font-weight: bolder;
+  }
+  .list-ingredients-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

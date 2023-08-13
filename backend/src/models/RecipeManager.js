@@ -146,6 +146,9 @@ class RecipeManager {
     //   })
     //   .catch();
     // let recipeAdded = null;
+    const ingredients = recipe.ingredients.map((ingredient) => {
+      return { ...ingredient, IngredientId: ingredient.id };
+    });
     try {
       // const { dataValues: recipeAdded } = await Recipe.create({
       //   name: recipe.name,
@@ -153,22 +156,30 @@ class RecipeManager {
       //   UserId: recipe.UserId,
       //   isPublic: recipe.isPublic,
       // });
-      const { dataValues: recipeAdded } = await Recipe.create(recipe);
+      const { dataValues: recipeAdded } = await Recipe.create(
+        {
+          ...recipe,
+          RecipeHasIngredients: ingredients,
+        },
+        {
+          include: [RecipeHasIngredients],
+        }
+      );
       console.log(recipeAdded, "recipeAdded");
       // recipeAdded = dataValues;
 
       // recipe.ingredients.forEach(async (ingredient) => {
       // console.log(ingredient, "ingredient");
-      const ingredientAdded = await Promise.all(
-        recipe.ingredients.map((ingredient) =>
-          RecipeHasIngredients.create({
-            RecipeId: recipeAdded.id,
-            IngredientId: ingredient.id,
-            unit: ingredient.unit,
-            quantity: ingredient.quantity,
-          })
-        )
-      );
+      // const ingredientAdded = await Promise.all(
+      //   recipe.ingredients.map((ingredient) =>
+      //     RecipeHasIngredients.create({
+      //       RecipeId: recipeAdded.id,
+      //       IngredientId: ingredient.id,
+      //       unit: ingredient.unit,
+      //       quantity: ingredient.quantity,
+      //     })
+      //   )
+      // );
       // recipe.ingredients.map((ingredient) =>
       //   RecipeHasIngredients.create({
       //     RecipeId: recipeAdded.id,
@@ -181,7 +192,6 @@ class RecipeManager {
       // });
 
       // UserHasRecipes.save();
-      console.log(ingredientAdded, "ingredientAdded");
       // });
       return recipeAdded;
     } catch (err) {
@@ -202,22 +212,30 @@ class RecipeManager {
       } = i;
       return IngredientId;
     });
-    console.log(ingredientIds);
-    console.log(recipe.ingredients);
-    const isDifferent = !(
-      ingredientIds.length === recipe.ingredients.length &&
-      recipe.ingredients.some((ingredientId) =>
-        ingredientIds.includes(ingredientId)
-      )
-    );
+    // console.log(ingredientIds);
+    // console.log(recipe.ingredients);
+
+    const isDifferent =
+      ingredientIds.length !== recipe.ingredients.length ||
+      recipe.ingredients.some((ingredient) => {
+        console.log(ingredient.id, ingredientIds);
+        const foundIngredient = ingredientIds.find(
+          (ingredientId) => ingredientId === ingredient.id
+        );
+        console.log(foundIngredient, "found ingredient");
+        return foundIngredient === undefined;
+      });
     if (isDifferent) {
+      console.log(isDifferent, "isDifferent");
       try {
         await RecipeHasIngredients.destroy({ where: { RecipeId: id } });
         await Promise.all(
-          recipe.ingredients.map((ingredientId) =>
+          recipe.ingredients.map((ingredient) =>
             RecipeHasIngredients.create({
               RecipeId: id,
-              IngredientId: ingredientId,
+              IngredientId: ingredient.id,
+              quantity: ingredient.quantity,
+              unit: ingredient.unit,
             })
           )
         );
@@ -226,8 +244,9 @@ class RecipeManager {
         return err;
       }
     }
-    console.log(recipeIngredients, "recipeIngredients");
-    return Recipe.update(
+    const {
+      dataValues: { recipeUpdated },
+    } = await Recipe.update(
       {
         name: recipe.name,
         picture: recipe.picture,
@@ -238,6 +257,20 @@ class RecipeManager {
         where: { id },
       }
     );
+
+    return recipeUpdated;
+    // console.log(recipeIngredients, "recipeIngredients");
+    // return Recipe.update(
+    //   {
+    //     name: recipe.name,
+    //     picture: recipe.picture,
+    //     description: recipe.description,
+    //     isPublic: recipe.isPublic,
+    //   },
+    //   {
+    //     where: { id },
+    //   }
+    // );
   }
 
   static deleteRecipe(id) {

@@ -1,0 +1,29 @@
+.list-details {
+  display: flex;
+  flex: 1;
+  background-color: $color-secondary;
+  position: relative;
+  width: fit-content;
+  max-width: 80vw;
+  margin: 0 auto;
+
+  .list-ingredients {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 0 auto;
+    padding: 3rem;
+    height: 50vh;
+    width: 100%;
+    .ingredient-name {
+      color: $color-text-contrast;
+    }
+  }
+
+  .arrow-list-close {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 2rem;
+    transition: all 500ms ease-in-out;
+  }
+}

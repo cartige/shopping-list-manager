@@ -39,6 +39,7 @@ export default function NavBarLog() {
         >
           Mes Listes
         </NavLink>
+
         <Button type="button" onClick={hLogOut} className="log-out">
           Se Deconnecter
         </Button>

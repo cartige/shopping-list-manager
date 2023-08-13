@@ -16,31 +16,6 @@
       width: 100%;
       padding: 1rem;
     }
-
-    .list-details {
-      display: flex;
-      flex: 1;
-      background-color: $color-secondary;
-      position: relative;
-      max-width: 50vw;
-      margin: 0 auto;
-
-      .list-ingredients {
-        margin: 0 auto;
-        padding: 1rem;
-        .ingredient-name {
-          color: $color-text-contrast;
-        }
-      }
-
-      .arrow-list-close {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        font-size: 2rem;
-        transition: all 500ms ease-in-out;
-      }
-    }
   }
   .main-button {
     width: fit-content;

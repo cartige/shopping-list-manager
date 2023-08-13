@@ -7,7 +7,7 @@ export default function List({ list, onClick }) {
     <div onClick={onClick} className="list-card" role="presentation">
       <div className="list-card-text">
         <h2 className="list-name">{list.name}</h2>
-        <p className="list-date">{list.date}</p>
+        <p className="list-date">{list.createdAt}</p>
         <BsArrowRightCircle className="arrow-list" />
       </div>
     </div>
@@ -19,7 +19,7 @@ List.propTypes = {
   list: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    date: PropTypes.string,
+    createdAt: PropTypes.string,
   }),
 };
 

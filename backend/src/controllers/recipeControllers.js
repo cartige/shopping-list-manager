@@ -59,7 +59,7 @@ const update = (req, res) => {
 
   model
     .updateRecipe(id, fields)
-    .then(({ dataValues }) => {
+    .then((dataValues) => {
       console.log(dataValues, "dataValues");
       const recipeInserted = dataValues;
       res.send(recipeInserted).status(201);

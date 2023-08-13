@@ -45,7 +45,7 @@ export default function IngredientForm({
               name: typeName,
               id: parseInt(ingAddedTypeId, 10),
               ingredients: [
-                ...ingredients, // A REFAIRE SEULEMENT setIngredients ICI !!!!!!!
+                ...ingredients,
                 {
                   name: ingredientAdded.name,
                   id: parseInt(ingredientAdded.id, 10),

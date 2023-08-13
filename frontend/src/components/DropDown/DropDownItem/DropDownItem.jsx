@@ -13,7 +13,7 @@ export default function DropDownItem({
   setIngredient,
 }) {
   const [quantity, setQuantity] = useState(0);
-  const [unit, setUnit] = useState("");
+  const [unit, setUnit] = useState(null);
   useEffect(() => {
     if (ingredientsForm.find((i) => i.id === item.id)) {
       setIngredientsForm(
@@ -57,7 +57,7 @@ export default function DropDownItem({
   const handleUnitChange = (evt) => {
     console.log(evt.target);
     if (evt.target.value === "Unité") {
-      setUnit("");
+      setUnit(null);
     } else {
       setUnit(evt.target.value);
     }

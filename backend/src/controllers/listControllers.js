@@ -1,11 +1,12 @@
 const model = require("../models/ListManager");
 
 const browse = (req, res) => {
-  const { userId } = req.query;
+  const { id } = req.params;
   model
-    .getLists(userId)
+    .getLists(id)
     .then((lists) => {
-      res.send(lists);
+      console.log(lists, "lists controller");
+      res.send(lists).status(200);
     })
     .catch((err) => {
       console.error(err);
@@ -20,8 +21,8 @@ const add = (req, res) => {
 
   model
     .insertList(list)
-    .then((result) => {
-      res.location(`/items/${result.insertId}`).sendStatus(201);
+    .then((listInserted) => {
+      res.send(listInserted).status(201);
     })
     .catch((err) => {
       console.error(err);
@@ -29,7 +30,21 @@ const add = (req, res) => {
     });
 };
 
+const update = (req, res) => {
+  const list = req.body;
+  const { id } = req.params;
+  model
+    .updateList(id, list)
+    .then((listUpdated) => {
+      res.send(listUpdated).status(200);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
 module.exports = {
   browse,
   add,
+  update,
 };

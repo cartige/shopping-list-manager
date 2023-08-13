@@ -9,7 +9,7 @@ import "./recipeForm.scss";
 
 export default function RecipeForm() {
   const { currentUser } = useContext(UserContext);
-  const [stepNumber, setStepNumber] = useState(1);
+  // const [stepNumber, setStepNumber] = useState(1);
   const [steps, setSteps] = useState([1]);
   const [ingredientByTypes, setIngredientByTypes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
@@ -23,15 +23,6 @@ export default function RecipeForm() {
     description: "",
   });
 
-  // useEffect(() => {
-  //   console.log(ingredients);
-  //   debugger;
-  //   setIngredientByTypes(
-  //     ingredientByTypes.map((type) => {
-  //       return { ...type, ingredients };
-  //     })
-  //   );
-  // }, [ingredients]);
   console.log(currentUser, "currentUser");
   useEffect(() => {
     setIngredientByTypes(
@@ -49,17 +40,14 @@ export default function RecipeForm() {
   }, [ingredients]);
 
   useEffect(() => {
-    // setRecipeForm({ ...recipeForm, UserId: currentUser.user.id });
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/ingredients`)
       .then(({ data }) => {
         setIngredientByTypes(data);
-        // console.log(data);
       })
       .catch((err) => {
         console.error(err);
       });
-    console.log(currentUser.user.id, "user id");
   }, [currentUser]);
 
   const hSubmit = (evt) => {
@@ -115,19 +103,12 @@ export default function RecipeForm() {
   };
 
   const handleStepAdd = () => {
-    // setStepNumber(stepNumber + 1);
     setSteps(steps.concat(steps[steps.length - 1] + 1));
-    // setSteps(steps.filter((step) => steps[steps.length - 1] === step));
   };
 
   const handleStepDel = () => {
     setSteps(steps.filter((step) => steps[steps.length - 1] !== step));
-    // stepst.pop();
   };
-
-  console.log(recipeForm);
-  console.log(ingredientsForm);
-  console.log(ingredientByTypes, "ingredientByTypes");
 
   return (
     <form className="recipe-form" onSubmit={hSubmit}>
@@ -156,9 +137,6 @@ export default function RecipeForm() {
           value={recipeForm.name}
           className="input-name-recipe"
         />
-        {/* <label htmlFor="name" name="name" className="input-name-recipe">
-          Nom du plat
-        </label> */}
       </div>
       <div className="recipe-form-body">
         <div className="recipe-steps-container">
@@ -167,6 +145,7 @@ export default function RecipeForm() {
               <RecipeStep stepNumber={step} key={step} />
             ))}
           </ul>
+
           <Button
             type="button"
             name="recipe-step-button"
@@ -175,6 +154,7 @@ export default function RecipeForm() {
           >
             Ajouter une étape
           </Button>
+
           <Button type="button" onClick={handleStepDel}>
             Retirer une étape
           </Button>
@@ -182,6 +162,7 @@ export default function RecipeForm() {
 
         <div className="ingredient-list-form-container">
           <h2 className="ingredient-list-form-title">Liste des ingredients</h2>
+
           <ul className="ingredient-list-form">
             {ingredientByTypes.map((ingredientByType) => {
               return (
@@ -194,22 +175,9 @@ export default function RecipeForm() {
                   setIngredients={setIngredients}
                 />
               );
-              // return (
-              //   <div className="checkbox-container" key={ingredient.id}>
-              //     <label htmlFor="name" name="name">
-              //       {ingredient.name}
-              //     </label>
-              //     <input
-              //       type="checkbox"
-              //       name="IngredientId"
-              //       value={ingredient.type}
-              //       id={ingredient.id}
-              //       onChange={hChange}
-              //     />
-              //   </div>
-              // );
             })}
           </ul>
+
           <IngredientForm
             ingredientByTypes={ingredientByTypes}
             setIngredientByTypes={setIngredientByTypes}
@@ -223,8 +191,10 @@ export default function RecipeForm() {
         <label htmlFor="public" name="public">
           Public
         </label>
+
         <input type="checkbox" name="isPublic" onChange={hChange} />
       </div>
+
       <div className="button-container">
         <Button type="submit" name="recipe-form-button" id="recipe-form-button">
           Ajouter mon plat

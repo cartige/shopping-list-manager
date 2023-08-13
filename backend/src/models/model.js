@@ -92,7 +92,10 @@ Ingredient.hasMany(RecipeHasIngredients, { foreignKey: "IngredientId" });
 
 const ListHasIngredients = db.define(
   "ListHasIngredients",
-  {},
+  {
+    quantity: { type: DataTypes.INTEGER, allowNull: true, unique: false },
+    unit: { type: DataTypes.STRING, allowNull: true, unique: false },
+  },
   { tableName: "list_has_ingredient" }
 );
 

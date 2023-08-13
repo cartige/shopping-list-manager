@@ -1,10 +1,8 @@
 import "./myRecipes.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AiOutlinePoweroff } from "react-icons/ai";
-import { BsArrowLeftCircle } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
-import axios from "axios";
 import Button from "../../components/Button/Button";
 import PanelSwitcher from "../../components/Layouts/PanelSwitcher/PanelSwitcher";
 import NavBarLog from "../../components/NavBarLog/NavBarLog";
@@ -30,8 +28,6 @@ export default function MyRecipes() {
   const { isShowing: showForm, toggle: toggleForm } = useModal();
   const [selectedRecipe, setSelectedRecipe] = useState(defaultRecipe);
   const [selectedMyRecipe, setSelectedMyRecipe] = useState(defaultRecipe);
-  const [isRecipeSelected, setIsRecipeSelected] = useState(false);
-  // const [, setMyRecipes] = useState([]);
   const navigate = useNavigate();
 
   const hLogOut = () => {
@@ -44,39 +40,22 @@ export default function MyRecipes() {
     setTimeout(() => navigate("/"), 1000);
   };
 
-  // const isDisabled = () => {};
-
-  const handleRecipeSelect = (stateName, recipe = defaultRecipe) => {
-    if (stateName === "recipes") {
-      setSelectedRecipe(recipe);
-      // setIsRecipeSelected(!isRecipeSelected);
-    } else {
-      setSelectedMyRecipe(recipe);
-      // setIsRecipeSelected(!isRecipeSelected);
-    }
-    // setIsRecipeSelected(false);
-    // if (stateName === "recipes") {
-    //   setSelectedRecipe(recipe);
-    // } else {
-    //   setSelectedMyRecipe(recipe);
-    // }
-    // setIsRecipeSelected(true);
-  };
-
-  console.log(myRecipes, "myRecipes");
-  console.log(recipes, "recipes");
+  // const handleRecipeSelect = (stateName, recipe = defaultRecipe) => {
+  //   if (stateName === "recipes") {
+  //     setSelectedRecipe(recipe);
+  //   } else {
+  //     setSelectedMyRecipe(recipe);
+  //   }
+  // };
 
   return (
     <div className="my-recipes">
       <NavBarLog />
+
       <div className="body-myrecipes">
         <Button type="button" className="main-button" onClick={toggleForm}>
           Ajouter un plat
         </Button>
-
-        {/* <h2 className={`${isRecipeSelected ? "display-title" : "hide-title"}`}>
-          Mes Recettes
-        </h2> */}
         <h2
           className={`${
             !(selectedRecipe.id || selectedMyRecipe.id)
@@ -87,13 +66,6 @@ export default function MyRecipes() {
           Mes Recettes
         </h2>
         {myRecipes && (
-          // <h2
-          //   className={`${
-          //     !selectedRecipe.id ? "display-title" : "hide-title"
-          //   }`}
-          // >
-          //   Mes Recettes
-          // </h2>
           <PanelSwitcher
             open={!!selectedMyRecipe.id}
             isDisabled={!!selectedRecipe.id}
@@ -112,19 +84,6 @@ export default function MyRecipes() {
             </div>
 
             {selectedMyRecipe && (
-              // <div className="recipe-details">
-              //   <BsArrowLeftCircle
-              //     className="arrow-recipe-close"
-              //     onClick={() => setSelectedMyRecipe(null)}
-              //   />
-              //   <div className="recipe-details-container">
-              //     <img
-              //       src={selectedMyRecipe.img}
-              //       alt="recipe-img"
-              //       className="recipe-img"
-              //     />
-              //   </div>
-              // </div>
               <RecipeDetails
                 onClick={() => setSelectedMyRecipe(defaultRecipe)}
                 recipe={selectedMyRecipe}
@@ -160,19 +119,6 @@ export default function MyRecipes() {
             </div>
 
             {selectedRecipe && (
-              // <div className="recipe-details">
-              //   <BsArrowLeftCircle
-              //     className="arrow-recipe-close"
-              //     onClick={() => setSelectedRecipe(null)}
-              //   />
-              //   <div className="recipe-details-container">
-              //     <img
-              //       src={selectedRecipe.img}
-              //       alt="recipe-img"
-              //       className="recipe-img"
-              //     />
-              //   </div>
-              // </div>
               <RecipeDetails
                 onClick={() => setSelectedRecipe(defaultRecipe)}
                 recipe={selectedRecipe}
@@ -181,7 +127,9 @@ export default function MyRecipes() {
           </PanelSwitcher>
         )}
       </div>
+
       <AiOutlinePoweroff className="log-out-mobile" onClick={hLogOut} />
+
       <Modal
         isShowing={showForm}
         hide={toggleForm}
