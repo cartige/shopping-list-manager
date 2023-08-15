@@ -1,10 +1,85 @@
 .recipe-details {
   display: flex;
   flex: 1;
-  background-color: $color-secondary;
+  flex-direction: column;
+  // background-color: $color-secondary;
+  background-color: white;
   position: relative;
-  max-width: 70vw;
+  max-width: 80vw;
   margin: 0 auto;
+  width: 100%;
+
+  .recipe-details-container {
+    display: flex;
+    background-color: $color-secondary;
+
+    .recipe-ingredients {
+      display: flex;
+      flex-direction: column;
+      // border: 3px solid yellowgreen;
+      border-top: 1px solid black;
+      width: 30%;
+      align-items: center;
+      background-color: $box-background-color;
+      overflow-y: scroll;
+      .recipe-ingredients-title {
+        font-size: 2rem;
+        color: $color-accent;
+        padding: 1.7rem;
+      }
+      .recipe-ingredients-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        width: 100%;
+        /* padding: 2rem; */
+        margin: 2rem auto;
+        align-items: center;
+        .recipe-ingredient-details-container {
+          display: flex;
+          gap: 6px;
+          font-size: 1.4rem;
+        }
+      }
+    }
+
+    .recipe-img {
+      width: 70%;
+    }
+  }
+
+  .recipe-steps {
+    border: 1px solid black;
+    min-height: 20rem;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    .recipe-steps-title {
+      text-align: center;
+      font-size: 2rem;
+    }
+    .recipe-steps-list {
+      display: flex;
+      flex-direction: column;
+      .recipe-step-container {
+        display: flex;
+        flex-direction: column;
+        .recipe-step-title {
+          font-size: 1.5rem;
+        }
+
+        .recipe-step-desciption {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+  .btn-recipe-details-container {
+    margin: 0 auto;
+    .btn-recipe-details {
+      font-size: 1rem;
+    }
+  }
 
   .arrow-recipe-close {
     position: absolute;
@@ -19,9 +94,17 @@
 @media screen and (max-width: 600px) {
   .recipe-details {
     max-width: 100vw;
-
-    .recipe-img {
-      max-width: 100vw;
+    flex-direction: column;
+    .recipe-details-container {
+      display: block;
+      .recipe-ingredients {
+        width: 100%;
+        border-top: none;
+      }
+      .recipe-img {
+        width: 100%;
+        max-width: 100vw;
+      }
     }
   }
 }

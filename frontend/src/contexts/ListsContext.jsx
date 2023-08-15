@@ -110,7 +110,7 @@ export function ListsInfosContext({ children }) {
           console.error(err);
         });
     }
-  }, [currentUser, listForm.ingredients]);
+  }, [currentUser, listForm.id]);
 
   useEffect(() => {
     setListForm({
@@ -131,7 +131,7 @@ export function ListsInfosContext({ children }) {
     }),
     [myLists, listForm, setListForm, setMyLists]
   );
-  console.log(myLists);
+  console.log(myLists, "my lists");
 
   return (
     <ListsContext.Provider value={context}>{children}</ListsContext.Provider>

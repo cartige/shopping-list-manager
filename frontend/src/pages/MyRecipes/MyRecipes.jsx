@@ -1,8 +1,20 @@
 import "./myRecipes.scss";
+// import "slick-carousel/slick/slick.css";
+// import "slick-carousel/slick/slick-theme.css";
+import "swiper/css";
+import "swiper/css/bundle";
 import { useContext, useState } from "react";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
+import { Swiper, SwiperSlide } from "swiper/react";
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Autoplay,
+} from "swiper/modules";
 import Button from "../../components/Button/Button";
 import PanelSwitcher from "../../components/Layouts/PanelSwitcher/PanelSwitcher";
 import NavBarLog from "../../components/NavBarLog/NavBarLog";
@@ -29,6 +41,7 @@ export default function MyRecipes() {
   const [selectedRecipe, setSelectedRecipe] = useState(defaultRecipe);
   const [selectedMyRecipe, setSelectedMyRecipe] = useState(defaultRecipe);
   const navigate = useNavigate();
+  // register();
 
   const hLogOut = () => {
     setCurrentUser({});
@@ -39,6 +52,7 @@ export default function MyRecipes() {
     });
     setTimeout(() => navigate("/"), 1000);
   };
+  console.log(selectedRecipe);
 
   // const handleRecipeSelect = (stateName, recipe = defaultRecipe) => {
   //   if (stateName === "recipes") {
@@ -56,6 +70,7 @@ export default function MyRecipes() {
         <Button type="button" className="main-button" onClick={toggleForm}>
           Ajouter un plat
         </Button>
+
         <h2
           className={`${
             !(selectedRecipe.id || selectedMyRecipe.id)
@@ -70,17 +85,51 @@ export default function MyRecipes() {
             open={!!selectedMyRecipe.id}
             isDisabled={!!selectedRecipe.id}
           >
-            <div className="recipes-list">
-              {myRecipes.map((recipe) => {
-                return (
-                  <Recipe
-                    key={recipe.id}
-                    onClick={() => setSelectedMyRecipe(recipe)}
-                    recipe={recipe}
-                    display
-                  />
-                );
-              })}
+            <div className="recipes-list my-recipes">
+              <Swiper
+                modules={[Pagination, Scrollbar, A11y, Autoplay]}
+                spaceBetween={50}
+                slidesPerView={3}
+                onSlideChange={() => console.log("slide change")}
+                onSwiper={(swiper) => console.log(swiper)}
+                autoplay
+                pagination
+                breakpoints={{
+                  0: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                  },
+                  525: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
+                  },
+                  750: {
+                    slidesPerView: 3,
+                    spaceBetween: 40,
+                  },
+                  950: {
+                    slidesPerView: 4,
+                    spaceBetween: 40,
+                  },
+                  1300: {
+                    slidesPerView: 5,
+                    spaceBetween: 20,
+                  },
+                }}
+              >
+                {myRecipes.map((recipe) => {
+                  return (
+                    <SwiperSlide key={recipe.id}>
+                      <Recipe
+                        key={recipe.id}
+                        onClick={() => setSelectedMyRecipe(recipe)}
+                        recipe={recipe}
+                        display
+                      />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
             </div>
 
             {selectedMyRecipe && (
@@ -96,7 +145,7 @@ export default function MyRecipes() {
             !(selectedRecipe.id || selectedMyRecipe.id)
               ? "display-title"
               : "hide-title"
-          }`}
+          } display-title-all-recipes`}
         >
           Toutes les recettes
         </h2>
@@ -105,17 +154,51 @@ export default function MyRecipes() {
             open={!!selectedRecipe.id}
             isDisabled={!!selectedMyRecipe.id}
           >
-            <div className="recipes-list">
-              {recipes.map((recipe) => {
-                return recipe.isPublic ? (
-                  <Recipe
-                    key={recipe.id}
-                    onClick={() => setSelectedRecipe(recipe)}
-                    recipe={recipe}
-                    display
-                  />
-                ) : null;
-              })}
+            <div className="recipes-list all-recipes">
+              <Swiper
+                modules={[Pagination, Scrollbar, A11y, Autoplay]}
+                spaceBetween={50}
+                slidesPerView={3}
+                onSlideChange={() => console.log("slide change")}
+                onSwiper={(swiper) => console.log(swiper)}
+                autoplay
+                pagination
+                breakpoints={{
+                  0: {
+                    slidesPerView: 1,
+                    spaceBetween: 20,
+                  },
+                  525: {
+                    slidesPerView: 2,
+                    spaceBetween: 30,
+                  },
+                  750: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                  },
+                  950: {
+                    slidesPerView: 4,
+                    spaceBetween: 30,
+                  },
+                  1300: {
+                    slidesPerView: 5,
+                    spaceBetween: 20,
+                  },
+                }}
+              >
+                {recipes.map((recipe) => {
+                  return recipe.isPublic ? (
+                    <SwiperSlide key={recipe.id}>
+                      <Recipe
+                        key={recipe.id}
+                        onClick={() => setSelectedRecipe(recipe)}
+                        recipe={recipe}
+                        display
+                      />
+                    </SwiperSlide>
+                  ) : null;
+                })}
+              </Swiper>
             </div>
 
             {selectedRecipe && (

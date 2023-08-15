@@ -7,7 +7,9 @@
     flex-direction: row;
     transition: all 100ms ease-in-out;
     transform: translateX(0);
+    // height: 17rem;
     &.open {
+      // height: auto;
       transform: translateX(-50%);
     }
     .panel {

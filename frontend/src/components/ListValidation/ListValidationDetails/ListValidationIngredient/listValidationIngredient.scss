@@ -1,17 +1,27 @@
 .ingredient-detail-container {
   position: relative;
+  // height: 20px;
   .ingredient-detail {
     display: flex;
     align-items: flex-end;
-    gap: 8px;
+    gap: 6px;
+    height: 20px;
 
     .ingredient-name {
     }
 
     .ingredient-quantity {
+      // width: 3rem;
+      // border: 1px solid black;
+      // padding: 1px;
+      width: 52px;
+      text-align: center;
+    }
+    .ingredient-quantity-input {
       width: 3rem;
-      border: 1px solid black;
-      padding: 1px;
+      text-align: center;
+      padding: 0;
+      height: 16px;
     }
 
     .display {

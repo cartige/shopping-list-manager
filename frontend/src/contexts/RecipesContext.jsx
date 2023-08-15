@@ -21,6 +21,8 @@ export function RecipesInfosContext({ children }) {
       });
   }, []);
 
+  console.log(recipes);
+
   const context = useMemo(
     () => ({
       recipes,

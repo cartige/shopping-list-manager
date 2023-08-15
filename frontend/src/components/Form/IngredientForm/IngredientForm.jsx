@@ -13,6 +13,8 @@ export default function IngredientForm({
     name: "",
     isSelected: false,
     IngredientTypeId: undefined,
+    quantity: null,
+    unit: null,
   });
 
   const handleIngredientForm = (evt) => {
@@ -66,12 +68,17 @@ export default function IngredientForm({
           isSelected: false,
           IngredientTypeId: undefined,
         });
-        setIngredientsForm([...ingredientsForm, { id: ingredientAdded.id }]);
+        setIngredientsForm([
+          ...ingredientsForm,
+          { id: ingredientAdded.id, quantity: 0 },
+        ]);
       })
       .catch((err) => {
         console.error(err);
       });
   };
+
+  console.log(ingredientsForm, "ingredients form");
 
   return (
     <div name="add-ingredient" className="add-ingredient-form">
@@ -122,7 +129,13 @@ IngredientForm.propTypes = {
     })
   ).isRequired,
   setIngredientByTypes: PropTypes.func.isRequired,
-  ingredientsForm: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.number))
-    .isRequired,
+  ingredientsForm: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+      quantity: PropTypes.number,
+      unit: PropTypes.string,
+    })
+  ).isRequired,
   setIngredientsForm: PropTypes.func.isRequired,
 };

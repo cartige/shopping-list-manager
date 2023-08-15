@@ -93,16 +93,21 @@ class ListManager {
     })
       .then((lists) => {
         // return lists;
-        return lists.map((list) => {
-          console.log(list.Ingredients, "ingredientssssssssssssssssssssssssss");
-          return {
-            name: list.name,
-            id: list.id,
-            ingredients: this.ingredientMapping(list.Ingredients),
-            createdAt: list.createdAt,
-            updatedAt: list.updatedAt,
-          };
-        });
+        return lists
+          .map((list) => {
+            console.log(
+              list.Ingredients,
+              "ingredientssssssssssssssssssssssssss"
+            );
+            return {
+              name: list.name,
+              id: list.id,
+              ingredients: this.ingredientMapping(list.Ingredients),
+              createdAt: list.createdAt,
+              updatedAt: list.updatedAt,
+            };
+          })
+          .sort((a, b) => b.updatedAt - a.updatedAt);
       })
       .catch((err) => {
         console.error(err);
@@ -122,7 +127,7 @@ class ListManager {
           include: [ListHasIngredients],
         }
       );
-      return listInserted;
+      return { ...listInserted, ingredients: list.ingredients };
     } catch (err) {
       return err;
     }

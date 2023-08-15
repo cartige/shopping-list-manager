@@ -5,6 +5,7 @@ import ListValidation from "../../ListValidation/ListValidation";
 import PanelSwitcher from "../../Layouts/PanelSwitcher/PanelSwitcher";
 import UserContext from "../../../contexts/UserContext";
 import ListsContext from "../../../contexts/ListsContext";
+import IngredientsContext from "../../../contexts/IngredientsContext";
 import useModal from "../../useModal/useModal";
 import Modal from "../../Modal/Modal";
 import Recipe from "../../Recipe/Recipe";
@@ -12,7 +13,9 @@ import "./listForm.scss";
 
 export default function ListForm({ toggleForm }) {
   const { myRecipes } = useContext(UserContext);
-  const { listForm, setListForm } = useContext(ListsContext);
+  const { listForm, setListForm, setMyLists, myLists } =
+    useContext(ListsContext);
+  // const { ingredients } = useContext(IngredientsContext);
   const [showListDetails, setShowListDetails] = useState(false);
   const { isShowing: showCancelForm, toggle: toggleCancelForm } = useModal();
   const [recipesForList, setRecipesForList] = useState(
@@ -106,6 +109,7 @@ export default function ListForm({ toggleForm }) {
           ingredientList: data.ListHasIngredients,
           id: data.id,
         });
+        // setMyLists([...myLists, data].sort((a, b) => a.id - b.id));
         console.log(data, "post result");
       })
       .catch((err) => {
@@ -147,20 +151,45 @@ export default function ListForm({ toggleForm }) {
                 );
               })}
             </ul>
+            <button
+              type="button"
+              className={`${
+                showListDetails ? "hide-button" : "display-button"
+              }`}
+              onClick={handleShowListDetails}
+              disabled={!listForm.ingredients.length}
+            >
+              {showListDetails ? "Annuler" : "Aller à la Validation"}
+            </button>
           </div>
 
-          <ListValidation
-            listForm={listForm}
-            isDisplay={showListDetails}
-            setListForm={setListForm}
-          />
+          <div className="list-validation-container">
+            <ListValidation
+              listForm={listForm}
+              isDisplay={showListDetails}
+              setListForm={setListForm}
+            />
+            <button type="button" onClick={handleCreateList}>
+              Enregistrer
+            </button>
+            <button
+              type="button"
+              className={`${
+                showListDetails ? "hide-button" : "display-button"
+              }`}
+              onClick={handleShowListDetails}
+              disabled={!listForm.ingredients.length}
+            >
+              {showListDetails ? "Annuler" : "Aller à la Validation"}
+            </button>
+          </div>
         </PanelSwitcher>
-        {showListDetails ? (
+        {/* {showListDetails ? (
           <button type="button" onClick={handleCreateList}>
             Enregistrer
           </button>
-        ) : null}
-
+        ) : null} */}
+        {/* 
         <button
           type="button"
           className={`${showListDetails ? "hide-button" : "display-button"}`}
@@ -168,7 +197,7 @@ export default function ListForm({ toggleForm }) {
           disabled={!listForm.ingredients.length}
         >
           {showListDetails ? "Annuler" : "Aller à la Validation"}
-        </button>
+        </button> */}
 
         <Modal
           isShowing={showCancelForm}

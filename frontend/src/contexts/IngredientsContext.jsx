@@ -1,6 +1,8 @@
-import { createContext, useState, useMemo, useEffect } from "react";
+import { createContext, useState, useMemo, useEffect, useContext } from "react";
 import { PropTypes } from "prop-types";
 import axios from "axios";
+import UserContext from "./UserContext";
+import ListsContext from "./ListsContext";
 
 const IngredientsContext = createContext({
   ingredients: [],
@@ -9,24 +11,131 @@ export default IngredientsContext;
 
 export function IngredientsInfosContext({ children }) {
   const [ingredients, setIngredients] = useState([]);
+  const [allIngredientsByType, setAllIngredientsBytType] = useState([]);
+  const { currentUser } = useContext(UserContext);
+  const { listForm } = useContext(ListsContext);
+
+  const mapIngredientsByType = (ingredientsToMap) => {
+    const ingredientByTypes = [];
+    let currentType = { id: undefined, name: "", ingredients: [] };
+    ingredientsToMap.sort((a, b) => a.type.id - b.type.id);
+    ingredientsToMap.forEach((ingredient, index) => {
+      const {
+        type: { id },
+      } = ingredient;
+      if (
+        ingredientsToMap[index + 1] &&
+        ingredientsToMap[index + 1].type.id === id
+      ) {
+        currentType.name = ingredient.type.name;
+        currentType.id = ingredient.type.id;
+        currentType.ingredients.push(ingredient);
+      } else {
+        currentType.name = ingredient.type.name;
+        currentType.id = ingredient.type.id;
+        currentType.ingredients.push(ingredient);
+        ingredientByTypes.push(currentType);
+        currentType = { id: undefined, name: "", ingredients: [] };
+      }
+    });
+    return ingredientByTypes;
+  };
+
+  const groupIngredientByUnitAndQuantity = (ingredientsToGroup) => {
+    let currentIngredient = { quantity: 0, unit: null, id: undefined };
+    const ingredientsGrouped = [];
+    ingredientsToGroup.sort((a, b) => a.id - b.id);
+    ingredientsToGroup.forEach((ingredient, index) => {
+      if (
+        ingredientsToGroup[index + 1] &&
+        ingredientsToGroup[index + 1].id === ingredient.id
+      ) {
+        if (ingredientsToGroup[index + 1].unit === ingredient.unit) {
+          const { quantity } = currentIngredient;
+          const { quantity: newQuantity, unit } = ingredient;
+          currentIngredient = {
+            ...ingredient,
+            quantity: quantity + newQuantity,
+            unit,
+            IngredientId: ingredient.id,
+          };
+        } else if (currentIngredient.quantity) {
+          ingredientsGrouped.push({
+            ...currentIngredient,
+            quantity: currentIngredient.quantity + ingredient.quantity,
+          });
+          currentIngredient = { quantity: 0, unit: "", id: undefined };
+        }
+      } else if (currentIngredient.id === ingredient.id) {
+        ingredientsGrouped.push({
+          ...currentIngredient,
+          quantity: currentIngredient.quantity + ingredient.quantity,
+        });
+        currentIngredient = { quantity: 0, unit: "", id: undefined };
+      } else if (currentIngredient.quantity) {
+        ingredientsGrouped.push({
+          ...currentIngredient,
+          quantity: currentIngredient.quantity + ingredient.quantity,
+        });
+        ingredientsGrouped.push({
+          ...ingredient,
+          IngredientId: ingredient.id,
+        });
+        currentIngredient = { quantity: 0, unit: "", id: undefined };
+      } else {
+        ingredientsGrouped.push({
+          ...ingredient,
+          IngredientId: ingredient.id,
+        });
+      }
+    });
+    return ingredientsGrouped;
+  };
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/ingredients`)
       .then(({ data }) => {
-        setIngredients(data);
+        setAllIngredientsBytType(data);
+        setIngredients(
+          data.reduce((acc, curr) => {
+            return acc.concat(curr.ingredients);
+          }, [])
+        );
       })
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [currentUser]);
 
+  useEffect(() => {
+    const { ingredients: listFormIngredients } = listForm;
+    setIngredients(
+      ingredients.filter((ingredient) => {
+        return (
+          listFormIngredients.find(
+            (formIngredient) => ingredient.id === formIngredient.id
+          ) === undefined
+        );
+      })
+    );
+  }, [listForm]);
+  console.log(ingredients);
   const context = useMemo(
     () => ({
       ingredients,
+      allIngredientsByType,
       setIngredients,
+      mapIngredientsByType,
+      groupIngredientByUnitAndQuantity,
     }),
-    [ingredients, setIngredients]
+    [
+      ingredients,
+      allIngredientsByType,
+      setIngredients,
+      mapIngredientsByType,
+      groupIngredientByUnitAndQuantity,
+    ]
   );
 
   return (

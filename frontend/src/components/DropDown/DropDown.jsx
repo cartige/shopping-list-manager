@@ -47,9 +47,9 @@ export default function DropDown({
           />
         )}
       </div>
-      <div className="list-items">
+      <div className={`list-items ${isExtended ? "drop-down-display" : ""}`}>
         {list.map((item) => {
-          return isExtended ? (
+          return (
             <DropDownItem
               item={item}
               key={item.id}
@@ -57,7 +57,7 @@ export default function DropDown({
               ingredientsForm={ingredientsForm}
               setIngredient={setIngredient}
             />
-          ) : null;
+          );
         })}
       </div>
     </div>

@@ -19,6 +19,18 @@ const Recipe = db.define(
   { tableName: "recipe" }
 );
 
+const RecipeSteps = db.define(
+  "RecipeSteps",
+  {
+    stepNumber: { type: DataTypes.INTEGER, unique: false, allowNull: false },
+    description: { type: DataTypes.STRING, unique: false, allowNull: false },
+  },
+  { tableName: "recipe_step" }
+);
+
+Recipe.hasMany(RecipeSteps);
+RecipeSteps.belongsTo(Recipe);
+
 const User = db.define(
   "User",
   {
@@ -111,8 +123,8 @@ Ingredient.belongsToMany(List, {
 List.hasMany(ListHasIngredients, { foreignKey: "ListId" });
 Ingredient.hasMany(ListHasIngredients, { foreignKey: "IngredientId" });
 
-IngredientType.hasMany(Ingredient);
-Ingredient.belongsTo(IngredientType);
+// IngredientType.hasMany(Ingredient);
+// Ingredient.belongsTo(IngredientType);
 
 // User.hasMany(Recipe);
 // Recipe.belongsTo(User);
@@ -157,6 +169,7 @@ UserHasRecipes.belongsTo(Recipe);
 module.exports = {
   User,
   Recipe,
+  RecipeSteps,
   List,
   Ingredient,
   IngredientType,

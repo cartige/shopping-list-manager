@@ -1,0 +1,22 @@
+.list-item-container {
+  display: flex;
+  flex-direction: column;
+  .add-item-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    .quantity-input-container {
+      display: flex;
+      flex-direction: column;
+      .quantity-input {
+        width: 3rem;
+        /* min-width: auto; */
+        text-align: center;
+      }
+    }
+  }
+  .error-message {
+    color: red;
+    padding-right: 1.6rem;
+  }
+}

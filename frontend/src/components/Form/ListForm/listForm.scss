@@ -19,11 +19,25 @@
       }
     }
 
+    .list-validation-container {
+      width: 100vw;
+      height: 100vh;
+    }
+
     .recipe-list {
       display: flex;
       flex-flow: row wrap;
       gap: 1rem;
       justify-content: center;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .list-form {
+    .list-validation-container {
+      width: 100vw;
+      height: 100vh;
     }
   }
 }

@@ -14,18 +14,19 @@ export default function DropDownItem({
 }) {
   const [quantity, setQuantity] = useState(0);
   const [unit, setUnit] = useState(null);
-  useEffect(() => {
-    if (ingredientsForm.find((i) => i.id === item.id)) {
-      setIngredientsForm(
-        ingredientsForm.map((ingredient) => {
-          if (ingredient.id === item.id) {
-            return { ...ingredient, unit, quantity };
-          }
-          return ingredient;
-        })
-      );
-    }
-  }, [quantity, unit]);
+
+  // useEffect(() => {
+  //   if (ingredientsForm.find((i) => i.id === item.id)) {
+  //     setIngredientsForm(
+  //       ingredientsForm.map((ingredient) => {
+  //         if (ingredient.id === item.id) {
+  //           return { ...ingredient, unit, quantity };
+  //         }
+  //         return ingredient;
+  //       })
+  //     );
+  //   }
+  // }, [quantity, unit]);
   useEffect(() => {
     console.log(ingredientsForm, "ingredients form quantity");
   }, [ingredientsForm]);
@@ -38,7 +39,12 @@ export default function DropDownItem({
       ) {
         setIngredientsForm([
           ...ingredientsForm,
-          { id: parseInt(item.id, 10), quantity, unit, name: item.name },
+          {
+            id: parseInt(item.id, 10),
+            quantity: parseInt(quantity, 10),
+            unit,
+            name: item.name,
+          },
         ]);
       }
     } else {

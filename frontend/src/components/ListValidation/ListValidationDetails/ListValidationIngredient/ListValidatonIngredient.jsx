@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { BiEdit } from "react-icons/bi";
 import { FiSave } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ListValidationIngredient({
   ingredient,
@@ -52,7 +52,7 @@ export default function ListValidationIngredient({
         <input
           type="number"
           value={newQuantity}
-          className={`ingredient-quantity ${
+          className={`ingredient-quantity-input ${
             isEditing ? "display" : "no-display"
           }`}
           name="quantity"

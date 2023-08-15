@@ -1,5 +1,6 @@
 const {
   Recipe,
+  RecipeSteps,
   Ingredient,
   IngredientType,
   RecipeHasIngredients,
@@ -32,18 +33,26 @@ class RecipeManager {
   static async getAllRecipes(userId, owned = false) {
     const isOwned = JSON.parse(owned)
       ? { model: User }
-      : { model: UserHasRecipes, where: userId ? { userId } : {} };
+      : {
+          model: UserHasRecipes,
+          where: userId ? { userId } : {},
+        };
 
     const hasUserId = userId ? {} : { isPublic: true };
 
     const include = [
       userId ? isOwned : { model: User },
       { model: Ingredient, include: [IngredientType] },
+      { model: RecipeSteps },
     ];
 
     const where = JSON.parse(owned) ? { userId } : hasUserId;
+    console.log(include, "incluuuuuuuuuuuuuuuuudeeeeeeeeeeeeee");
 
     try {
+      // const steps = await RecipeSteps.findAll({
+      //   where: {recipeId: }
+      // })
       const recipes = await Recipe.findAll({
         where,
         include,
@@ -56,6 +65,9 @@ class RecipeManager {
         //       type: { ...i.IngredientType.dataValues },
         //     }))
         //   : [];
+        // const steps = recipe.RecipeSteps.map((step) => {
+        //   return
+        // })
         const Ingredients = recipe.Ingredients.length
           ? this.ingredientMapping(recipe.Ingredients)
           : [];
@@ -67,6 +79,7 @@ class RecipeManager {
           isPublic: recipe.isPublic,
           description: recipe.description,
           Ingredients,
+          steps: recipe.RecipeSteps,
         };
       });
     } catch (err) {
@@ -105,7 +118,10 @@ class RecipeManager {
   static async getById(id) {
     const { dataValues: recipe } = await Recipe.findOne({
       where: { id },
-      include: [{ model: Ingredient, include: [IngredientType] }],
+      include: [
+        { model: Ingredient, include: [IngredientType] },
+        { model: RecipeSteps },
+      ],
     });
 
     const Ingredients = recipe.Ingredients.length
@@ -162,7 +178,7 @@ class RecipeManager {
           RecipeHasIngredients: ingredients,
         },
         {
-          include: [RecipeHasIngredients],
+          include: [{ model: RecipeHasIngredients }, { model: RecipeSteps }],
         }
       );
       console.log(recipeAdded, "recipeAdded");

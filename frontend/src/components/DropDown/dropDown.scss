@@ -8,12 +8,55 @@
       background-color: transparent;
       border: none;
       cursor: pointer;
+      font-size: 1.3rem;
     }
   }
 
   .list-items {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    display: none;
+    // transform: 3s linear 1s slidein;
+    // transition: all 1000ms ease-in-out;
+    height: 0;
+    // transform: translateY(-100%);
+    transition: all 1s ease-in-out;
+    &.drop-down-display {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      height: initial;
+      // transform: translateY(0);
+      // animation-name: dropDown;
+      // animation-duration: 1000ms;
+      // animation-iteration-count: 1;
+    }
+  }
+
+  @keyframes dropDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  .drop-down-display:active {
+    animation-name: dropDown;
+    animation-duration: 1sec;
+    animation-iteration-count: infinite;
+    animation: dropDown 1sec ease-in-out 0 1;
+    // transform: rotate(100deg);
+    // transition-duration: 1sec;
+  }
+  .drop-down-hide {
+    animation: closeDropDown 1sec ease-in-out 0 infinite;
+  }
+
+  @keyframes closeDropDown {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
   }
 }
