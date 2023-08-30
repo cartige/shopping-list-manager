@@ -11,7 +11,7 @@ export default IngredientsContext;
 
 export function IngredientsInfosContext({ children }) {
   const [ingredients, setIngredients] = useState([]);
-  const [allIngredientsByType, setAllIngredientsBytType] = useState([]);
+  const [allIngredientsByType, setAllIngredientsByType] = useState([]);
   const { currentUser } = useContext(UserContext);
   const { listForm } = useContext(ListsContext);
 
@@ -19,6 +19,7 @@ export function IngredientsInfosContext({ children }) {
     const ingredientByTypes = [];
     let currentType = { id: undefined, name: "", ingredients: [] };
     ingredientsToMap.sort((a, b) => a.type.id - b.type.id);
+    debugger;
     ingredientsToMap.forEach((ingredient, index) => {
       const {
         type: { id },
@@ -41,62 +42,86 @@ export function IngredientsInfosContext({ children }) {
     return ingredientByTypes;
   };
 
+  // const groupIngredientByUnitAndQuantity = (ingredientsToGroup) => {
+  //   let currentIngredient = { quantity: 0, unit: null, id: undefined };
+  //   const ingredientsGrouped = [];
+  //   ingredientsToGroup.sort((a, b) => a.id - b.id);
+  //   ingredientsToGroup.forEach((ingredient, index) => {
+  //     if (
+  //       ingredientsToGroup[index + 1] &&
+  //       ingredientsToGroup[index + 1].id === ingredient.id
+  //     ) {
+  //       if (ingredientsToGroup[index + 1].unit === ingredient.unit) {
+  //         const { quantity } = currentIngredient;
+  //         const { quantity: newQuantity, unit } = ingredient;
+  //         currentIngredient = {
+  //           ...ingredient,
+  //           quantity: quantity + newQuantity,
+  //           unit,
+  //           IngredientId: ingredient.id,
+  //         };
+  //       } else if (currentIngredient.quantity) {
+  //         ingredientsGrouped.push({
+  //           ...currentIngredient,
+  //           quantity: currentIngredient.quantity + ingredient.quantity,
+  //         });
+  //         currentIngredient = { quantity: 0, unit: "", id: undefined };
+  //       }
+  //     } else if (currentIngredient.id === ingredient.id) {
+  //       ingredientsGrouped.push({
+  //         ...currentIngredient,
+  //         quantity: currentIngredient.quantity + ingredient.quantity,
+  //       });
+  //       currentIngredient = { quantity: 0, unit: "", id: undefined };
+  //     } else if (currentIngredient.quantity) {
+  //       ingredientsGrouped.push({
+  //         ...currentIngredient,
+  //         quantity: currentIngredient.quantity + ingredient.quantity,
+  //       });
+  //       ingredientsGrouped.push({
+  //         ...ingredient,
+  //         IngredientId: ingredient.id,
+  //       });
+  //       currentIngredient = { quantity: 0, unit: "", id: undefined };
+  //     } else {
+  //       ingredientsGrouped.push({
+  //         ...ingredient,
+  //         IngredientId: ingredient.id,
+  //       });
+  //     }
+  //   });
+  //   return ingredientsGrouped;
+  // };
+
   const groupIngredientByUnitAndQuantity = (ingredientsToGroup) => {
-    let currentIngredient = { quantity: 0, unit: null, id: undefined };
-    const ingredientsGrouped = [];
-    ingredientsToGroup.sort((a, b) => a.id - b.id);
-    ingredientsToGroup.forEach((ingredient, index) => {
+    ingredientsToGroup
+      .sort((a, b) => a.id - b.id)
+      .sort((a, b) => a.unit - b.unit);
+
+    return ingredientsToGroup.reduce((acc, current) => {
       if (
-        ingredientsToGroup[index + 1] &&
-        ingredientsToGroup[index + 1].id === ingredient.id
+        acc.length &&
+        acc[acc.length - 1].id === current.id &&
+        acc[acc.length - 1].unit === current.unit
       ) {
-        if (ingredientsToGroup[index + 1].unit === ingredient.unit) {
-          const { quantity } = currentIngredient;
-          const { quantity: newQuantity, unit } = ingredient;
-          currentIngredient = {
-            ...ingredient,
-            quantity: quantity + newQuantity,
-            unit,
-            IngredientId: ingredient.id,
-          };
-        } else if (currentIngredient.quantity) {
-          ingredientsGrouped.push({
-            ...currentIngredient,
-            quantity: currentIngredient.quantity + ingredient.quantity,
-          });
-          currentIngredient = { quantity: 0, unit: "", id: undefined };
-        }
-      } else if (currentIngredient.id === ingredient.id) {
-        ingredientsGrouped.push({
-          ...currentIngredient,
-          quantity: currentIngredient.quantity + ingredient.quantity,
-        });
-        currentIngredient = { quantity: 0, unit: "", id: undefined };
-      } else if (currentIngredient.quantity) {
-        ingredientsGrouped.push({
-          ...currentIngredient,
-          quantity: currentIngredient.quantity + ingredient.quantity,
-        });
-        ingredientsGrouped.push({
-          ...ingredient,
-          IngredientId: ingredient.id,
-        });
-        currentIngredient = { quantity: 0, unit: "", id: undefined };
+        let prevElem = acc.pop();
+        prevElem = {
+          ...prevElem,
+          quantity: prevElem.quantity + current.quantity,
+        };
+        acc.push(prevElem);
       } else {
-        ingredientsGrouped.push({
-          ...ingredient,
-          IngredientId: ingredient.id,
-        });
+        acc.push({ ...current, key: acc.length + 1 });
       }
-    });
-    return ingredientsGrouped;
+      return acc;
+    }, []);
   };
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/ingredients`)
       .then(({ data }) => {
-        setAllIngredientsBytType(data);
+        setAllIngredientsByType(data);
         setIngredients(
           data.reduce((acc, curr) => {
             return acc.concat(curr.ingredients);

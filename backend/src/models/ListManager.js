@@ -2,53 +2,50 @@ const {
   List,
   Ingredient,
   IngredientType,
-  ListHasIngredients,
+  ListHasIngredient,
 } = require("./model");
+const { mapIngredientsByType } = require("../services/IngredientService");
 
 class ListManager {
-  static mapIngredientsByType = (ingredientsToMap) => {
-    const ingredientByTypes = [];
-    let currentType = { id: undefined, name: "", ingredients: [] };
-    ingredientsToMap.sort((a, b) => a.type.id - b.type.id);
-    ingredientsToMap.forEach((ingredient, index) => {
-      const {
-        type: { id },
-      } = ingredient;
-      if (
-        ingredientsToMap[index + 1] &&
-        ingredientsToMap[index + 1].type.id === id
-      ) {
-        currentType.name = ingredient.type.name;
-        currentType.id = ingredient.type.id;
-        currentType.ingredients.push(ingredient);
-        // currentType = { ...currentType, ingredients };
-      } else {
-        currentType.name = ingredient.type.name;
-        currentType.id = ingredient.type.id;
-        currentType.ingredients.push(ingredient);
-        ingredientByTypes.push(currentType);
-        currentType = { id: undefined, name: "", ingredients: [] };
-      }
-    });
-    return ingredientByTypes;
-  };
+  // static mapIngredientsByType = (ingredientsToMap) => {
+  //   const ingredientByTypes = [];
+  //   let currentType = { id: undefined, name: "", ingredients: [] };
+  //   ingredientsToMap.sort((a, b) => a.type.id - b.type.id);
+  //   ingredientsToMap.forEach((ingredient, index) => {
+  //     const {
+  //       type: { id },
+  //     } = ingredient;
+  //     if (
+  //       ingredientsToMap[index + 1] &&
+  //       ingredientsToMap[index + 1].type.id === id
+  //     ) {
+  //       currentType.name = ingredient.type.name;
+  //       currentType.id = ingredient.type.id;
+  //       currentType.ingredients.push(ingredient);
+  //       // currentType = { ...currentType, ingredients };
+  //     } else {
+  //       currentType.name = ingredient.type.name;
+  //       currentType.id = ingredient.type.id;
+  //       currentType.ingredients.push(ingredient);
+  //       ingredientByTypes.push(currentType);
+  //       currentType = { id: undefined, name: "", ingredients: [] };
+  //     }
+  //   });
+  //   return ingredientByTypes;
+  // };
 
-  static ingredientMapping = (ingredients) => {
+  static ingredientMapping = (ingredients, byType = false) => {
     const myIngredients = ingredients.map((ingredient) => {
       const {
         dataValues: {
           name,
           id,
-          ListHasIngredients: {
+          ListHasIngredient: {
             dataValues: { quantity, unit },
           },
           IngredientType: { dataValues: ingredientType },
         },
       } = ingredient;
-      console.log(
-        ingredientType,
-        "ingredient idddddddddddddddddddddddddddddddddddddddddddddddddhfehoeihpiej"
-      );
       return {
         id,
         name,
@@ -57,7 +54,7 @@ class ListManager {
         type: { ...ingredientType },
       };
     });
-    return this.mapIngredientsByType(myIngredients);
+    return byType ? mapIngredientsByType(myIngredients) : myIngredients;
   };
 
   static getLists(userId) {
@@ -102,7 +99,7 @@ class ListManager {
             return {
               name: list.name,
               id: list.id,
-              ingredients: this.ingredientMapping(list.Ingredients),
+              ingredients: this.ingredientMapping(list.Ingredients, true),
               createdAt: list.createdAt,
               updatedAt: list.updatedAt,
             };
@@ -115,16 +112,31 @@ class ListManager {
       });
   }
 
+  static async getById(id) {
+    const list = await List.findOne({
+      where: { id },
+      include: [{ model: Ingredient, include: [IngredientType] }],
+    });
+
+    if (list) {
+      const Ingredients = list.Ingredients.length
+        ? this.ingredientMapping(list.Ingredients)
+        : [];
+      return { ...list.dataValues, Ingredients };
+    }
+    return null;
+  }
+
   static async insertList(list) {
     try {
       const { dataValues: listInserted } = await List.create(
         {
           name: list.name || "Test List",
           UserId: list.UserId,
-          ListHasIngredients: list.ingredients,
+          ListHasIngredient: list.ingredients,
         },
         {
-          include: [ListHasIngredients],
+          include: [ListHasIngredient],
         }
       );
       return { ...listInserted, ingredients: list.ingredients };
@@ -134,9 +146,10 @@ class ListManager {
   }
 
   static async updateList(id, list) {
-    const listIngredients = await ListHasIngredients.findAll({
+    const listIngredients = await ListHasIngredient.findAll({
       where: { ListId: id },
     });
+    const currentList = this.getById(id);
 
     const ingredientIds = listIngredients.map((i) => {
       const {
@@ -145,23 +158,35 @@ class ListManager {
       return IngredientId;
     });
 
-    const isDifferent =
-      ingredientIds.length !== list.ingredients.length ||
+    const areIngredientsDifferent =
+      currentList.Ingredients.length !== currentList.ingredients.length ||
       list.ingredients.some((ingredient) => {
-        console.log(ingredient.id, ingredientIds);
-        const foundIngredient = ingredientIds.find(
-          (ingredientId) => ingredientId === ingredient.id
+        const foundIngredient = currentList.Ingredients.find(
+          (currentListIngredient) =>
+            currentListIngredient.id === ingredient.id &&
+            ingredient.quantity === currentListIngredient.quantity
         );
-        console.log(foundIngredient, "found ingredient");
         return foundIngredient === undefined;
       });
 
-    if (isDifferent) {
+    // const isDifferent =
+    //   ingredientIds.length !== list.ingredients.length ||
+    //   list.ingredients.some((ingredient) => {
+    //     console.log(ingredient.id, ingredientIds);
+    //     const foundIngredient = ingredientIds.find(
+    //       (ingredientId) => ingredientId === ingredient.id
+    //     );
+    //     console.log(foundIngredient, "found ingredient");
+    //     return foundIngredient === undefined;
+    //   });
+
+    if (areIngredientsDifferent) {
+      console.log("different");
       try {
-        await ListHasIngredients.destroy({ where: { ListId: id } });
+        await ListHasIngredient.destroy({ where: { ListId: id } });
         await Promise.all(
           list.ingredients.map((ingredient) =>
-            ListHasIngredients.create({
+            ListHasIngredient.create({
               ListId: id,
               IngredientId: ingredient.id,
               quantity: ingredient.quantity,
@@ -169,7 +194,10 @@ class ListManager {
             })
           )
         );
-      } catch (err) {}
+      } catch (err) {
+        console.error(err);
+        return err;
+      }
     }
 
     const {

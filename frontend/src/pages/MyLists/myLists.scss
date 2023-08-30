@@ -9,21 +9,35 @@
     margin-top: 3rem;
     padding-bottom: 7rem;
 
-    .shopping-list {
+    .shopping-list-container {
       display: flex;
-      flex-flow: row wrap;
-      justify-content: center;
-      gap: 1.5rem;
+      flex-direction: column;
       width: 100%;
-      padding: 1rem;
+
+      .title-my-lists {
+        font-size: 2rem;
+        padding: 2rem;
+        text-align: center;
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+      }
+      .shopping-list {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: center;
+        gap: 1.5rem;
+        width: 100%;
+        margin-top: 5rem;
+      }
     }
   }
   .main-button {
     width: fit-content;
     padding: 0.5rem;
     border-radius: 1rem;
-    margin: 2rem 1.3rem 2rem 1rem;
     cursor: pointer;
+    margin: 2rem auto;
     padding: 1rem;
     font-size: 1.5rem;
     box-shadow: 2px 2px 10px black;
@@ -44,20 +58,31 @@
   .my-lists {
     height: 100vh;
     .body-mylists {
-      .shopping-list {
-        flex-direction: column;
-        align-items: center;
-        min-height: 70vh;
-        justify-content: flex-start;
+      .shopping-list-container {
+        width: 100%;
+        gap: 5rem;
+        .shopping-list {
+          flex-direction: column;
+          align-items: center;
+          min-height: 70vh;
+          justify-content: flex-start;
+          padding: 0;
+          margin-top: 0;
+        }
+
+        .title-my-lists {
+          font-size: 2rem;
+          text-align: center;
+          border: 1px solid black;
+          border-left: none;
+          border-right: none;
+          // width: 100%;
+        }
       }
 
       .list-details {
         max-width: 100vw;
       }
-    }
-
-    .main-button {
-      margin: 2rem 0 2rem 1rem;
     }
 
     .log-out-mobile {

@@ -24,7 +24,8 @@ router.post("/recipes", recipeControllers.add);
 router.put("/recipes/:id", recipeControllers.update);
 router.delete("/recipes/:id", recipeControllers.del);
 
-router.get("/lists/:id", listControllers.browse);
+router.get("/lists", listControllers.browse);
+router.get("/lists/:id", listControllers.find);
 router.post("/lists", listControllers.add);
 router.put("/lists/:id", listControllers.update);
 

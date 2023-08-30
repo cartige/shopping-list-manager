@@ -95,9 +95,12 @@ export default function ListForm({ toggleForm }) {
   }, [showListDetails]);
 
   const handleCreateList = () => {
-    const withoutDeletedIngredients = listForm.ingredients.filter(
-      (ingredient) => !ingredient.isDeleted
-    );
+    const withoutDeletedIngredients = listForm.ingredients
+      .filter((ingredient) => !ingredient.isDeleted)
+      .map((ing) => {
+        return { ...ing, IngredientId: ing.id || ing.IngredientId };
+      });
+
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/lists`, {
         ...listForm,
@@ -109,8 +112,6 @@ export default function ListForm({ toggleForm }) {
           ingredientList: data.ListHasIngredients,
           id: data.id,
         });
-        // setMyLists([...myLists, data].sort((a, b) => a.id - b.id));
-        console.log(data, "post result");
       })
       .catch((err) => {
         console.error(err);
@@ -118,7 +119,6 @@ export default function ListForm({ toggleForm }) {
 
     toggleForm();
   };
-  console.log(listForm, "list form");
   return (
     listForm.UserId && (
       <form className="list-form">
@@ -184,20 +184,6 @@ export default function ListForm({ toggleForm }) {
             </button>
           </div>
         </PanelSwitcher>
-        {/* {showListDetails ? (
-          <button type="button" onClick={handleCreateList}>
-            Enregistrer
-          </button>
-        ) : null} */}
-        {/* 
-        <button
-          type="button"
-          className={`${showListDetails ? "hide-button" : "display-button"}`}
-          onClick={handleShowListDetails}
-          disabled={!listForm.ingredients.length}
-        >
-          {showListDetails ? "Annuler" : "Aller à la Validation"}
-        </button> */}
 
         <Modal
           isShowing={showCancelForm}

@@ -15,21 +15,6 @@ export default function DropDownItem({
   const [quantity, setQuantity] = useState(0);
   const [unit, setUnit] = useState(null);
 
-  // useEffect(() => {
-  //   if (ingredientsForm.find((i) => i.id === item.id)) {
-  //     setIngredientsForm(
-  //       ingredientsForm.map((ingredient) => {
-  //         if (ingredient.id === item.id) {
-  //           return { ...ingredient, unit, quantity };
-  //         }
-  //         return ingredient;
-  //       })
-  //     );
-  //   }
-  // }, [quantity, unit]);
-  useEffect(() => {
-    console.log(ingredientsForm, "ingredients form quantity");
-  }, [ingredientsForm]);
   const handleIngredientsForm = () => {
     if (!item.isSelected) {
       if (
@@ -54,22 +39,24 @@ export default function DropDownItem({
         )
       );
     }
-
-    // setIsSelected(!isSelected);
-    console.log(item);
     setIngredient({ ...item, isSelected: !item.isSelected });
-    // setIngredient;
   };
+
   const handleUnitChange = (evt) => {
-    console.log(evt.target);
     if (evt.target.value === "Unité") {
       setUnit(null);
     } else {
       setUnit(evt.target.value);
     }
   };
+
   return (
-    <div key={item.id} className="item-info-container">
+    <div
+      key={item.id}
+      className={`item-info-container ${
+        item.isSelected ? "selected" : "not-selected"
+      }`}
+    >
       <button
         type="button"
         className="item-name"

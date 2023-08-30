@@ -1,15 +1,15 @@
-const { UserHasRecipes, User } = require("./model");
+const { UserHasRecipe, User } = require("./model");
 
 class UserRecipeManager {
   static insertRecipeUser(userId, recipeId) {
-    return UserHasRecipes.create({
+    return UserHasRecipe.create({
       UserId: userId,
       RecipeId: recipeId,
     });
   }
 
   static deleteRecipeUser(userId, recipeId) {
-    return UserHasRecipes.destroy({
+    return UserHasRecipe.destroy({
       where: { userId, recipeId },
     });
   }

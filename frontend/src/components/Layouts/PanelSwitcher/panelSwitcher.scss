@@ -18,3 +18,15 @@
     }
   }
 }
+
+@media screen and (max-width: 600px) {
+  .panel-switcher {
+    .panels {
+      &.open {
+      }
+      .panel {
+        justify-content: center;
+      }
+    }
+  }
+}

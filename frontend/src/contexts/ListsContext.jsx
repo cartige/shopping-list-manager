@@ -102,8 +102,9 @@ export function ListsInfosContext({ children }) {
       } = currentUser;
       setListForm({ ...listForm, UserId: id });
       axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}/lists/${id}`)
+        .get(`${import.meta.env.VITE_BACKEND_URL}/lists?userId=${id}`)
         .then(({ data }) => {
+          console.log(data);
           setMyLists(data);
         })
         .catch((err) => {

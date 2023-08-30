@@ -27,7 +27,7 @@ export default function MyLists() {
 
     return ingredients.map((ingredient) => ingredient);
   };
-
+  console.log(myLists, "my lists");
   const hLogOut = () => {
     setCurrentUser({});
     swal({
@@ -48,18 +48,21 @@ export default function MyLists() {
         </Button>
 
         <PanelSwitcher open={!!selectedList} isDisabled={false}>
-          <div className="shopping-list">
-            {myLists.map((list) => {
-              const ingredients = mapIngredients(list);
-              return (
-                <List
-                  key={list.id}
-                  onClick={() => setSelectedList(list)}
-                  list={list}
-                  ingredients={ingredients}
-                />
-              );
-            })}
+          <div className="shopping-list-container">
+            <h1 className="title-my-lists">Mes listes</h1>
+            <div className="shopping-list">
+              {myLists.map((list) => {
+                const ingredients = mapIngredients(list);
+                return (
+                  <List
+                    key={list.id}
+                    onClick={() => setSelectedList(list)}
+                    list={list}
+                    ingredients={ingredients}
+                  />
+                );
+              })}
+            </div>
           </div>
 
           {selectedList && (

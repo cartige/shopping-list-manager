@@ -67,6 +67,10 @@
           color: black;
           border-width: 1.5px;
         }
+        .btn-pagination-selected {
+          background-color: black;
+          color: white;
+        }
       }
     }
   }
@@ -75,6 +79,7 @@
 @media screen and (max-width: 600px) {
   .list-validation-container {
     width: 100vw;
-    height: 100vh;
+    // height: 100vh;
+    margin-top: 2rem;
   }
 }

@@ -13,9 +13,10 @@ export default function ListValidationDetails({
     isBeingEdited: false,
   });
   const { listForm } = useContext(ListsContext);
+  console.log(ingredientByType);
 
   useEffect(() => {
-    const { id } = editingIngredient;
+    const { id, key } = editingIngredient;
 
     if (listForm) {
       const ingredientToEdit = listForm.ingredients.find(
@@ -26,19 +27,19 @@ export default function ListValidationDetails({
           setIngredients(
             [
               ...listForm.ingredients.filter(
-                (ingredient) => ingredient.id !== id
+                (ingredient) => ingredient.key !== key
               ),
               { ...editingIngredient },
-            ].sort((a, b) => a.id - b.id)
+            ].sort((a, b) => a.key - b.key)
           );
         } else if (ingredientToEdit.quantity !== editingIngredient.quantity) {
           setIngredients(
             [
               ...listForm.ingredients.filter(
-                (ingredient) => ingredient.id !== id
+                (ingredient) => ingredient.key !== key
               ),
               { ...editingIngredient, isDeleted: false },
-            ].sort((a, b) => a.id - b.id)
+            ].sort((a, b) => a.key - b.key)
           );
         }
       }
@@ -46,12 +47,12 @@ export default function ListValidationDetails({
   }, [editingIngredient]);
 
   return (
-    <div className="list-validation-detail">
+    <div key={ingredientByType.id} className="list-validation-detail">
       <h1 className="type-name">{name}</h1>
       <ul className="ingredient-list">
         {ingredientsByType.map((ingredient) => {
           return (
-            <div key={ingredient.id}>
+            <div key={ingredient.key}>
               <ListValidationIngredient
                 ingredient={ingredient}
                 editingIngredient={editingIngredient}

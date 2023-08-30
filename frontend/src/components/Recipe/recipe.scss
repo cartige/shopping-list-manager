@@ -5,6 +5,7 @@
   overflow: hidden;
   background-color: $recipe-card-background-color;
   border-radius: $box-border-radius;
+  border: 4px solid purple;
   cursor: pointer;
   border: $box-border;
   min-width: $recipe-card-min-width;
@@ -34,6 +35,14 @@
       height: 100%;
     }
   }
+}
+
+.recipe-owned {
+  border: 4px solid rgb(116, 10, 116);
+}
+
+.recipe-my-recipe {
+  border: 4px solid green;
 }
 
 .selected {

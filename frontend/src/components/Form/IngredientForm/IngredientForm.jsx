@@ -38,6 +38,9 @@ export default function IngredientForm({
         const { name: typeName, ingredients } = ingredientByTypes.find(
           (i) => i.id === parseInt(ingAddedTypeId, 10)
         );
+        console.log(ingredientAdded);
+        console.log(ingredients);
+        debugger;
         setIngredientByTypes(
           [
             ...ingredientByTypes.filter(
@@ -70,7 +73,7 @@ export default function IngredientForm({
         });
         setIngredientsForm([
           ...ingredientsForm,
-          { id: ingredientAdded.id, quantity: 0 },
+          { id: ingredientAdded.id, quantity: 0, name: ingredientAdded.name },
         ]);
       })
       .catch((err) => {

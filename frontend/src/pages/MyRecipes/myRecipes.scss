@@ -62,7 +62,7 @@
     .display-title {
       display: initial;
       font-size: 2rem;
-      padding: 1rem;
+      padding: 2rem;
       margin: 3rem auto;
       border: 1px solid black;
     }
@@ -100,6 +100,7 @@
 @media screen and (max-width: 600px) {
   .my-recipes {
     // height: 100vh;
+
     .body-myrecipes {
       .hide {
         display: none;
@@ -110,6 +111,7 @@
         justify-content: center;
         height: auto;
         margin: auto;
+        padding: 0;
         // min-height: 70vh;
         // justify-content: flex-start;
       }

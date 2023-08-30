@@ -1,40 +1,42 @@
+const sequelize = require("../db");
 const {
   Recipe,
-  RecipeSteps,
+  RecipeStep,
   Ingredient,
   IngredientType,
-  RecipeHasIngredients,
+  RecipeHasIngredient,
   User,
-  UserHasRecipes,
+  UserHasRecipe,
 } = require("./model");
 
+const { ingredientMapping } = require("../services/IngredientService");
+
 class RecipeManager {
-  static ingredientMapping = (ingredients) => {
-    return ingredients.map((ingredient) => {
-      const {
-        id,
-        name,
-        IngredientType: { dataValues: type },
-        RecipeHasIngredients: {
-          dataValues: { quantity, unit },
-        },
-      } = ingredient;
-      console.log(ingredient.RecipeHasIngredients, "ingredient");
-      return {
-        id,
-        name,
-        quantity,
-        unit,
-        type: { ...type },
-      };
-    });
-  };
+  // static ingredientMapping = (ingredients) => {
+  //   return ingredients.map((ingredient) => {
+  //     const {
+  //       id,
+  //       name,
+  //       IngredientType: { dataValues: type },
+  //       RecipeHasIngredient: {
+  //         dataValues: { quantity, unit },
+  //       },
+  //     } = ingredient;
+  //     return {
+  //       id,
+  //       name,
+  //       quantity,
+  //       unit,
+  //       type: { ...type },
+  //     };
+  //   });
+  // };
 
   static async getAllRecipes(userId, owned = false) {
     const isOwned = JSON.parse(owned)
       ? { model: User }
       : {
-          model: UserHasRecipes,
+          model: UserHasRecipe,
           where: userId ? { userId } : {},
         };
 
@@ -43,33 +45,19 @@ class RecipeManager {
     const include = [
       userId ? isOwned : { model: User },
       { model: Ingredient, include: [IngredientType] },
-      { model: RecipeSteps },
+      { model: RecipeStep },
     ];
 
     const where = JSON.parse(owned) ? { userId } : hasUserId;
-    console.log(include, "incluuuuuuuuuuuuuuuuudeeeeeeeeeeeeee");
 
     try {
-      // const steps = await RecipeSteps.findAll({
-      //   where: {recipeId: }
-      // })
       const recipes = await Recipe.findAll({
         where,
         include,
       });
       return recipes.map((recipe) => {
-        // const Ingredients = recipe.Ingredients.length
-        //   ? recipe.Ingredients.map((i) => ({
-        //       id: i.id,
-        //       name: i.name,
-        //       type: { ...i.IngredientType.dataValues },
-        //     }))
-        //   : [];
-        // const steps = recipe.RecipeSteps.map((step) => {
-        //   return
-        // })
         const Ingredients = recipe.Ingredients.length
-          ? this.ingredientMapping(recipe.Ingredients)
+          ? ingredientMapping(recipe.Ingredients)
           : [];
         return {
           id: recipe.id,
@@ -79,136 +67,53 @@ class RecipeManager {
           isPublic: recipe.isPublic,
           description: recipe.description,
           Ingredients,
-          steps: recipe.RecipeSteps,
+          steps: recipe.RecipeStep,
         };
       });
     } catch (err) {
       console.error(err);
       return err;
     }
-
-    // return Recipe.findAll({
-    //   where,
-    //   include,
-    // }).then((recipes) =>
-    //   recipes.map((recipe) => {
-    //     // const Ingredients = recipe.Ingredients.length
-    //     //   ? recipe.Ingredients.map((i) => ({
-    //     //       id: i.id,
-    //     //       name: i.name,
-    //     //       type: { ...i.IngredientType.dataValues },
-    //     //     }))
-    //     //   : [];
-    //     const Ingredients = recipe.Ingredients.length
-    //       ? this.ingredientMapping(recipe.Ingredients)
-    //       : [];
-    //     return {
-    //       id: recipe.id,
-    //       name: recipe.name,
-    //       img: recipe.picture,
-    //       UserId: recipe.UserId,
-    //       isPublic: recipe.isPublic,
-    //       description: recipe.description,
-    //       Ingredients,
-    //     };
-    //   })
-    // );
   }
 
   static async getById(id) {
-    const { dataValues: recipe } = await Recipe.findOne({
+    const recipe = await Recipe.findOne({
       where: { id },
       include: [
         { model: Ingredient, include: [IngredientType] },
-        { model: RecipeSteps },
+        { model: RecipeStep },
       ],
     });
 
-    const Ingredients = recipe.Ingredients.length
-      ? this.ingredientMapping(recipe.Ingredients)
-      : [];
-
-    return { ...recipe, Ingredients };
+    if (recipe) {
+      const Ingredients = recipe.Ingredients.length
+        ? ingredientMapping(recipe.Ingredients)
+        : [];
+      return { ...recipe.dataValues, Ingredients };
+    }
+    return null;
   }
 
   static async insertRecipe(recipe) {
-    console.log(recipe, "recipe insertRecipe");
-    // const result = await Recipe.create(
-    //   {
-    //     name: recipe.name,
-    //     picture: recipe.picture,
-    //     UserId: recipe.UserId,
-    //     // RecipeHasIngredients: recipe.ingredients,
-    //     isPublic: recipe.isPublic,
-    //   }
-    // {
-    //   include: [
-    //     {
-    //       model: Ingredient,
-    //       include: [RecipeHasIngredients],
-    //     },
-    //   ],
-    // }
-    // )
-    //   .then(({ dataValues }) => {
-    //     recipe.ingredients.forEach((ingredient) => {
-    //       console.log(ingredient);
-    //       RecipeHasIngredients.create({
-    //         RecipeId: dataValues.id,
-    //         IngredientId: ingredient.ingredientId,
-    //       });
-    //     });
-    //     return dataValues;
-    //   })
-    //   .catch();
-    // let recipeAdded = null;
     const ingredients = recipe.ingredients.map((ingredient) => {
       return { ...ingredient, IngredientId: ingredient.id };
     });
     try {
-      // const { dataValues: recipeAdded } = await Recipe.create({
-      //   name: recipe.name,
-      //   picture: recipe.picture,
-      //   UserId: recipe.UserId,
-      //   isPublic: recipe.isPublic,
-      // });
       const { dataValues: recipeAdded } = await Recipe.create(
         {
           ...recipe,
-          RecipeHasIngredients: ingredients,
+          RecipeHasIngredient: ingredients,
         },
         {
-          include: [{ model: RecipeHasIngredients }, { model: RecipeSteps }],
+          include: [{ model: RecipeHasIngredient }, { model: RecipeStep }],
         }
       );
-      console.log(recipeAdded, "recipeAdded");
-      // recipeAdded = dataValues;
-
-      // recipe.ingredients.forEach(async (ingredient) => {
-      // console.log(ingredient, "ingredient");
-      // const ingredientAdded = await Promise.all(
-      //   recipe.ingredients.map((ingredient) =>
-      //     RecipeHasIngredients.create({
-      //       RecipeId: recipeAdded.id,
-      //       IngredientId: ingredient.id,
-      //       unit: ingredient.unit,
-      //       quantity: ingredient.quantity,
-      //     })
-      //   )
-      // );
-      // recipe.ingredients.map((ingredient) =>
-      //   RecipeHasIngredients.create({
-      //     RecipeId: recipeAdded.id,
-      //     IngredientId: ingredient.ingredientId,
-      //   })
-      // );
-      // await UserHasRecipes.create({
-      //   UserId: recipe.UserId,
-      //   recipeId: recipeAdded.id,
-      // });
-
-      // UserHasRecipes.save();
-      // });
+      if (recipeAdded) {
+        await UserHasRecipe.create({
+          UserId: recipe.UserId,
+          RecipeId: recipeAdded.id,
+        });
+      }
       return recipeAdded;
     } catch (err) {
       console.error(err);
@@ -217,76 +122,83 @@ class RecipeManager {
   }
 
   static async updateRecipe(id, recipe) {
-    // const currentRecipe = await this.getById(id);
-    const recipeIngredients = await RecipeHasIngredients.findAll({
-      where: { RecipeId: id },
-    });
+    try {
+      const currentRecipe = await this.getById(id);
+      let recipeUpdated = {};
 
-    const ingredientIds = recipeIngredients.map((i) => {
-      const {
-        dataValues: { IngredientId },
-      } = i;
-      return IngredientId;
-    });
-    // console.log(ingredientIds);
-    // console.log(recipe.ingredients);
+      if (currentRecipe) {
+        const areIngredientsDifferent =
+          currentRecipe.Ingredients.length !== recipe.ingredients.length ||
+          recipe.ingredients.some((ingredient) => {
+            const foundIngredient = currentRecipe.Ingredients.find(
+              (currentRecipeIngredient) =>
+                currentRecipeIngredient.id === ingredient.id &&
+                ingredient.quantity === currentRecipeIngredient.quantity
+            );
+            return foundIngredient === undefined;
+          });
 
-    const isDifferent =
-      ingredientIds.length !== recipe.ingredients.length ||
-      recipe.ingredients.some((ingredient) => {
-        console.log(ingredient.id, ingredientIds);
-        const foundIngredient = ingredientIds.find(
-          (ingredientId) => ingredientId === ingredient.id
-        );
-        console.log(foundIngredient, "found ingredient");
-        return foundIngredient === undefined;
-      });
-    if (isDifferent) {
-      console.log(isDifferent, "isDifferent");
-      try {
-        await RecipeHasIngredients.destroy({ where: { RecipeId: id } });
-        await Promise.all(
-          recipe.ingredients.map((ingredient) =>
-            RecipeHasIngredients.create({
-              RecipeId: id,
-              IngredientId: ingredient.id,
-              quantity: ingredient.quantity,
-              unit: ingredient.unit,
-            })
-          )
-        );
-      } catch (err) {
-        console.error(err);
-        return err;
+        const areStepsDifferent =
+          currentRecipe.RecipeStep.length !== recipe.RecipeStep.length ||
+          recipe.RecipeStep.some((step) => {
+            const foundStep = currentRecipe.RecipeStep.find(
+              (currentStep) =>
+                currentStep.stepNumber === step.stepNumber &&
+                currentStep.description === step.description
+            );
+            return foundStep === undefined;
+          });
+        await sequelize.transaction(async (t) => {
+          if (areIngredientsDifferent) {
+            await RecipeHasIngredient.destroy({
+              where: { RecipeId: id },
+              transaction: t,
+            });
+            await Promise.all(
+              recipe.ingredients.map((ingredient) =>
+                RecipeHasIngredient.create(
+                  {
+                    RecipeId: id,
+                    IngredientId: ingredient.id,
+                    quantity: ingredient.quantity,
+                    unit: ingredient.unit,
+                  },
+                  { transaction: t }
+                )
+              )
+            );
+          }
+          if (areStepsDifferent) {
+            await RecipeStep.destroy({
+              where: { RecipeId: id },
+              transaction: t,
+            });
+            await Promise.all(
+              recipe.RecipeStep.map((step) =>
+                RecipeStep.create({ ...step }, { transaction: t })
+              )
+            );
+          }
+          recipeUpdated = await Recipe.update(
+            {
+              name: recipe.name,
+              picture: recipe.picture,
+              description: recipe.description,
+              isPublic: recipe.isPublic,
+            },
+            {
+              where: { id },
+              transaction: t,
+            }
+          );
+        });
+      } else {
+        return "Recipe not found";
       }
+      return recipeUpdated;
+    } catch (err) {
+      return err;
     }
-    const {
-      dataValues: { recipeUpdated },
-    } = await Recipe.update(
-      {
-        name: recipe.name,
-        picture: recipe.picture,
-        description: recipe.description,
-        isPublic: recipe.isPublic,
-      },
-      {
-        where: { id },
-      }
-    );
-
-    return recipeUpdated;
-    // console.log(recipeIngredients, "recipeIngredients");
-    // return Recipe.update(
-    //   {
-    //     name: recipe.name,
-    //     picture: recipe.picture,
-    //     description: recipe.description,
-    //     isPublic: recipe.isPublic,
-    //   },
-    //   {
-    //     where: { id },
-    //   }
-    // );
   }
 
   static deleteRecipe(id) {

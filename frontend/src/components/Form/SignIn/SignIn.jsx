@@ -42,6 +42,7 @@ export default function SignInForm() {
         type="email"
         placeholder="email"
         name="email"
+        autoComplete="email"
         onChange={hChange}
         value={loginForm.email}
         className="input-log-form"
@@ -51,6 +52,7 @@ export default function SignInForm() {
         type="password"
         placeholder="mot de passe"
         name="password"
+        autoComplete="password"
         onChange={hChange}
         value={loginForm.password}
         className="input-log-form"

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
+import RecipesContext from "../../../contexts/RecipesContext";
 import RecipeStep from "../../RecipeStep/RecipeStep";
 import DropDown from "../../DropDown/DropDown";
 import IngredientForm from "../IngredientForm/IngredientForm";
@@ -9,11 +10,11 @@ import UserContext from "../../../contexts/UserContext";
 import "./recipeForm.scss";
 
 export default function RecipeForm() {
-  const { currentUser } = useContext(UserContext);
-  // const { ingredients } = useContext(IngredientsContext);
-  const defaultStep = { stepNumber: 0, description: "" };
+  const { currentUser, setMyRecipes, myRecipes } = useContext(UserContext);
+  const { recipes, setRecipes } = useContext(RecipesContext);
+  const defaultStep = { stepNumber: 1, description: "" };
   const [step, setStep] = useState(defaultStep);
-  const [steps, setSteps] = useState([]);
+  const [steps, setSteps] = useState([{ ...step }]);
   const [ingredientByTypes, setIngredientByTypes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [ingredientsForm, setIngredientsForm] = useState([]);
@@ -26,11 +27,14 @@ export default function RecipeForm() {
     description: "",
   });
 
-  // console.log(currentUser, "currentUser");
+  console.log(recipeForm, "recipe form");
+  console.log(ingredientByTypes, "ingredient by types");
+  const isAddRecipeBtnDisabled =
+    recipeForm.name === "" && recipeForm.ingredients.length === 0;
+
   useEffect(() => {
     setIngredientByTypes(
       ingredientByTypes.map((iByType) => {
-        console.log(iByType);
         if (iByType.id === ingredients[0].IngredientType.id) {
           return {
             ...iByType,
@@ -58,31 +62,16 @@ export default function RecipeForm() {
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/recipes`, recipeForm)
       .then(({ data: recipeAdded }) => {
-        console.log(recipeAdded);
+        setMyRecipes([...myRecipes, recipeAdded]);
+        setRecipes([...recipes, recipeAdded]);
       })
       .catch((err) => console.error(err));
   };
-
-  console.log(recipeForm, "recipeForm");
 
   const hChange = (evt) => {
     const {
       target: { checked, value, name },
     } = evt;
-    console.log("pas la ???????");
-    //   if (checked) {
-    //     if (!ingredientsForm.some((ingredient) => ingredient.id === id))
-    //       setIngredientsForm([...ingredientsForm, { id: parseInt(id, 10) }]);
-    //   } else {
-    //     setIngredientsForm(
-    //       ingredientsForm.filter(
-    //         (ingredient) => parseInt(id, 10) !== ingredient.id
-    //       )
-    //     );
-    //   }
-    // } else {
-
-    // }
 
     if (name === "isPublic") {
       setRecipeForm({
@@ -114,13 +103,18 @@ export default function RecipeForm() {
   };
 
   const handleStepDel = () => {
-    if (step.stepNumber) {
+    if (steps.length) {
       setSteps(
         steps.filter(
           (myStep) => myStep.stepNumber !== steps[steps.length - 1].stepNumber
         )
       );
-      setStep({ ...steps[steps.length - 2], stepNumber: step.stepNumber - 1 });
+      if (step.stepNumber !== 0) {
+        setStep({
+          ...steps[steps.length - 2],
+          stepNumber: step.stepNumber - 1,
+        });
+      }
     }
   };
 
@@ -129,7 +123,6 @@ export default function RecipeForm() {
       return myStep.stepNumber === step.stepNumber;
     });
     if (stepToUpdate && stepToUpdate.description !== step.description) {
-      // debugger;
       setSteps(
         [
           ...steps.filter(
@@ -145,21 +138,17 @@ export default function RecipeForm() {
     evt.preventDefault();
     axios
       .post(`${import.meta.env.VITE_BACKEND_URL}/recipes`, recipeForm)
-      .then((recipeInserted) => {
-        console.log(recipeInserted);
-        debugger;
+      .then((recipeAdded) => {
+        setMyRecipes([...myRecipes, recipeAdded]);
+        setRecipes([...recipes, recipeAdded]);
       })
       .catch((err) => console.error(err));
   };
 
   useEffect(() => {
     const finalSteps = steps.filter((myStep) => myStep.description !== "");
-    console.log(finalSteps);
-    setRecipeForm({ ...recipeForm, RecipeSteps: finalSteps });
-    debugger;
+    setRecipeForm({ ...recipeForm, RecipeStep: finalSteps });
   }, [steps]);
-
-  console.log(steps);
 
   return (
     <form className="recipe-form" onSubmit={hSubmit}>
@@ -197,22 +186,29 @@ export default function RecipeForm() {
                 step={myStep}
                 key={myStep.stepNumber}
                 setStep={setStep}
+                isDisabled={myStep.stepNumber < steps.length}
               />
             ))}
           </ul>
+          <div className="recipe-steps-btns">
+            <Button
+              type="button"
+              name="recipe-step-button"
+              id="recipe-step-button"
+              onClick={handleStepAdd}
+              disabled={step.description === ""}
+            >
+              Ajouter une étape
+            </Button>
 
-          <Button
-            type="button"
-            name="recipe-step-button"
-            id="recipe-step-button"
-            onClick={handleStepAdd}
-          >
-            Ajouter une étape
-          </Button>
-
-          <Button type="button" onClick={handleStepDel}>
-            Retirer une étape
-          </Button>
+            <Button
+              type="button"
+              onClick={handleStepDel}
+              disabled={steps.length === 1}
+            >
+              Retirer une étape
+            </Button>
+          </div>
         </div>
 
         <div className="ingredient-list-form-container">
@@ -242,23 +238,25 @@ export default function RecipeForm() {
         </div>
       </div>
 
-      <div className="checkbox-container">
-        <label htmlFor="public" name="public">
-          Public
-        </label>
+      <div className="submit-input-container">
+        <div className="checkbox-container">
+          <label htmlFor="public" name="public">
+            Partager la recette
+          </label>
 
-        <input type="checkbox" name="isPublic" onChange={hChange} />
-      </div>
-
-      <div className="button-container">
-        <Button
-          type="submit"
-          name="recipe-form-button"
-          id="recipe-form-button"
-          onSubmit={handleRecipeFormSubmit}
-        >
-          Ajouter mon plat
-        </Button>
+          <input type="checkbox" name="isPublic" onChange={hChange} />
+        </div>
+        <div className="button-container">
+          <Button
+            type="submit"
+            name="recipe-form-button"
+            id="recipe-form-button"
+            onSubmit={handleRecipeFormSubmit}
+            disabled={isAddRecipeBtnDisabled}
+          >
+            Ajouter mon plat
+          </Button>
+        </div>
       </div>
     </form>
   );

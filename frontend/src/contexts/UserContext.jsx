@@ -33,7 +33,11 @@ export function UserInfosContext({ children }) {
         .get(`${import.meta.env.VITE_BACKEND_URL}/recipes?userId=${id}`)
         .then(({ data }) => {
           console.log(data, "data");
-          setMyRecipes(data);
+          setMyRecipes(
+            data.map((recipe) => {
+              return { ...recipe, myRecipe: true };
+            })
+          );
         })
         .catch((err) => {
           console.error(err);

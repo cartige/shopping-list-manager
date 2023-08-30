@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./recipeStep.scss";
 import { PropTypes } from "prop-types";
 
-export default function RecipeStep({ step, setStep }) {
+export default function RecipeStep({ step, setStep, isDisabled }) {
   const [description, setDescription] = useState("");
 
   const handleDescription = (evt) => {
@@ -19,6 +19,7 @@ export default function RecipeStep({ step, setStep }) {
         className="step-description"
         value={description}
         onChange={handleDescription}
+        disabled={isDisabled}
       />
     </div>
   );
@@ -30,4 +31,5 @@ RecipeStep.propTypes = {
     description: PropTypes.string,
   }).isRequired,
   setStep: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
 };

@@ -3,7 +3,16 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
+  border: 1px solid black;
+  padding: 12px;
+  border-radius: 0.3rem;
+  cursor: pointer;
   .drop-down {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    margin: 1rem 0;
     .list-name {
       background-color: transparent;
       border: none;
@@ -22,12 +31,38 @@
     &.drop-down-display {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      height: initial;
+      gap: 0.75rem;
+      min-height: 150px;
+      height: fit-content;
+      width: 100%;
       // transform: translateY(0);
       // animation-name: dropDown;
       // animation-duration: 1000ms;
       // animation-iteration-count: 1;
+    }
+  }
+
+  .footer-drop-down {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 1rem;
+    padding: 8px;
+    width: 100%;
+    .pagination {
+      display: flex;
+      gap: 8px;
+      .pagination-button {
+        background-color: white;
+      }
+      .btn-pagination-selected {
+        background-color: black;
+        color: white;
+      }
+      .btn-pagination-not-selected {
+      }
+    }
+    .drop-down-filter {
+      width: 150px;
     }
   }
 

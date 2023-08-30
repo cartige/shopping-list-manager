@@ -4,6 +4,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import ListDetailsType from "./ListDetailsType/ListDetailsType";
 
 export default function ListDetails({ ingredientByTypes, setSelectedList }) {
+  console.log(ingredientByTypes);
   return (
     <div className="list-details">
       <BsArrowLeftCircle

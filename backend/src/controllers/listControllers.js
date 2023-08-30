@@ -1,12 +1,26 @@
 const model = require("../models/ListManager");
 
 const browse = (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.query;
   model
-    .getLists(id)
+    .getLists(userId)
     .then((lists) => {
       console.log(lists, "lists controller");
       res.send(lists).status(200);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+const find = (req, res) => {
+  const { id } = req.params;
+
+  model
+    .getById(id)
+    .then((list) => {
+      res.send(list).status(200);
     })
     .catch((err) => {
       console.error(err);
@@ -45,6 +59,7 @@ const update = (req, res) => {
 };
 module.exports = {
   browse,
+  find,
   add,
   update,
 };

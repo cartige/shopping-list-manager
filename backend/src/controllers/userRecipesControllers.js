@@ -21,8 +21,8 @@ const del = (req, res) => {
   model
     .deleteRecipeUser(userId, recipeId)
     .then(({ dataValues }) => {
-      const recipeInserted = dataValues;
-      res.send(recipeInserted).status(201);
+      const recipeDeleted = dataValues;
+      res.send(recipeDeleted).status(201);
     })
     .catch((err) => {
       console.error(err);

@@ -22,7 +22,6 @@ export default function ListValidationAdd({ item, isDisplay }) {
 
   const handleQuantityChange = (evt) => {
     const { value } = evt.target;
-    console.log(Number.isNaN(value));
     if (value !== "") {
       if (Number.isNaN(parseInt(value[value.length - 1], 10))) {
         setIsNotANumber(true);
@@ -35,13 +34,7 @@ export default function ListValidationAdd({ item, isDisplay }) {
     }
   };
 
-  //   useEffect(()=>{
-
-  //   }, [unit, quantity])
-
   const hAddElementToList = () => {
-    console.log(item, "element to add");
-    console.log(listForm);
     const { ingredients } = listForm;
     const { IngredientType: type, id } = item;
 
@@ -59,7 +52,7 @@ export default function ListValidationAdd({ item, isDisplay }) {
       ].sort((a, b) => a.id - b.id),
     });
   };
-  console.log(listForm, "list form add");
+
   return (
     isDisplay && (
       <li className="list-item-container">

@@ -19,8 +19,8 @@ const Recipe = db.define(
   { tableName: "recipe" }
 );
 
-const RecipeSteps = db.define(
-  "RecipeSteps",
+const RecipeStep = db.define(
+  "RecipeStep",
   {
     stepNumber: { type: DataTypes.INTEGER, unique: false, allowNull: false },
     description: { type: DataTypes.STRING, unique: false, allowNull: false },
@@ -28,8 +28,8 @@ const RecipeSteps = db.define(
   { tableName: "recipe_step" }
 );
 
-Recipe.hasMany(RecipeSteps);
-RecipeSteps.belongsTo(Recipe);
+Recipe.hasMany(RecipeStep);
+RecipeStep.belongsTo(Recipe);
 
 const User = db.define(
   "User",
@@ -75,105 +75,146 @@ Ingredient.belongsTo(IngredientType);
 User.hasMany(List);
 List.belongsTo(User);
 
-const RecipeHasIngredients = db.define(
-  "RecipeHasIngredients",
+const RecipeHasIngredient = db.define(
+  "RecipeHasIngredient",
   {
-    quantity: { type: DataTypes.INTEGER, allowNull: true, unique: false },
+    quantity: { type: DataTypes.INTEGER, allowNull: false, unique: false },
     unit: { type: DataTypes.STRING, allowNull: true, unique: false },
   },
   { tableName: "recipe_has_ingredient" }
 );
 
-const UserHasRecipes = db.define(
-  "UserHasRecipes",
+const UserHasRecipe = db.define(
+  "UserHasRecipe",
   {},
   { tableName: "user_has_recipe" }
 );
 
 Recipe.belongsToMany(Ingredient, {
-  through: RecipeHasIngredients,
+  through: RecipeHasIngredient,
   foreignKey: "RecipeId",
 });
 Ingredient.belongsToMany(Recipe, {
-  through: RecipeHasIngredients,
+  through: RecipeHasIngredient,
   foreignKey: "IngredientId",
 });
 
-Recipe.hasMany(RecipeHasIngredients, { foreignKey: "RecipeId" });
-Ingredient.hasMany(RecipeHasIngredients, { foreignKey: "IngredientId" });
+Recipe.hasMany(RecipeHasIngredient, { foreignKey: "RecipeId" });
+Ingredient.hasMany(RecipeHasIngredient, { foreignKey: "IngredientId" });
+RecipeHasIngredient.belongsTo(Recipe);
+RecipeHasIngredient.belongsTo(Ingredient);
 
-const ListHasIngredients = db.define(
-  "ListHasIngredients",
+const ListHasIngredient = db.define(
+  "ListHasIngredient",
   {
-    quantity: { type: DataTypes.INTEGER, allowNull: true, unique: false },
-    unit: { type: DataTypes.STRING, allowNull: true, unique: false },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    ListId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      // unique: "list_unique",
+      unique: false,
+    },
+    IngredientId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      // unique: "list_unique",
+      unique: false,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      unique: false,
+      // unique: "list_unique",
+    },
+    unit: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: false,
+    },
   },
-  { tableName: "list_has_ingredient" }
+  {
+    tableName: "list_has_ingredient",
+    // list_unique: {
+    //   fields: ["ListId", "IngredientId", "quantity", "unit"],
+    // },
+    // indexes: [
+    //   {
+    //     unique: false,
+    //     fields: ["ListId", "IngredientId"],
+    //   },
+    // ],
+  }
 );
 
 List.belongsToMany(Ingredient, {
-  through: ListHasIngredients,
-  foreignKey: "ListId",
+  through: ListHasIngredient,
+  // foreignKey: "ListId",
 });
 Ingredient.belongsToMany(List, {
-  through: ListHasIngredients,
-  foreignKey: "IngredientId",
+  through: ListHasIngredient,
+  // foreignKey: "IngredientId",
 });
 
-List.hasMany(ListHasIngredients, { foreignKey: "ListId" });
-Ingredient.hasMany(ListHasIngredients, { foreignKey: "IngredientId" });
-
+List.hasMany(ListHasIngredient);
+Ingredient.hasMany(ListHasIngredient);
 // IngredientType.hasMany(Ingredient);
 // Ingredient.belongsTo(IngredientType);
 
 // User.hasMany(Recipe);
 // Recipe.belongsTo(User);
-// UserHasRecipes.belongsToMany(User);
-// Recipe.hasMany(UserHasRecipes);
-// UserHasRecipes.belongsToMany(Recipe);
+// UserHasRecipe.belongsToMany(User);
+// Recipe.hasMany(UserHasRecipe);
+// UserHasRecipe.belongsToMany(Recipe);
 
 User.belongsToMany(Recipe, {
-  through: UserHasRecipes,
+  through: UserHasRecipe,
 });
 Recipe.belongsToMany(User, {
-  through: UserHasRecipes,
+  through: UserHasRecipe,
   // foreignKey: "ownerId",
   // as: "User",
 });
 
-User.hasMany(UserHasRecipes);
-UserHasRecipes.belongsTo(User);
-Recipe.hasMany(UserHasRecipes);
-UserHasRecipes.belongsTo(Recipe);
-// User.hasMany(UserHasRecipes, { foreignKey: "UserId" });
-// Recipe.hasMany(UserHasRecipes, { foreignKey: "RecipeId" });
+User.hasMany(UserHasRecipe);
+UserHasRecipe.belongsTo(User);
+Recipe.hasMany(UserHasRecipe);
+UserHasRecipe.belongsTo(Recipe);
 
-// UserHasRecipes.hasMany(Recipe);
-// UserHasRecipes.belongsTo(User, { foreignKey: "ownerId", as: "recipeOwner" });
-// Recipe.belongsTo(UserHasRecipes);
+// ListHasIngredient.sync();
+// User.hasMany(UserHasRecipe, { foreignKey: "UserId" });
+// Recipe.hasMany(UserHasRecipe, { foreignKey: "RecipeId" });
+
+// UserHasRecipe.hasMany(Recipe);
+// UserHasRecipe.belongsTo(User, { foreignKey: "ownerId", as: "recipeOwner" });
+// Recipe.belongsTo(UserHasRecipe);
 // User.hasMany(Recipe);
 // Recipe.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
 
-// UserHasRecipes.belongsToMany(User, {
+// UserHasRecipe.belongsToMany(User, {
 //   through: Recipe,
 //   foreignKey: "ownerId",
 //   as: "owner",
 // });
-// User.belongsToMany(UserHasRecipes, {
+// User.belongsToMany(UserHasRecipe, {
 //   through: Recipe,
 // });
 
-// Recipe.hasMany(UserHasRecipes, { foreignKey: "RecipeId" });
-// User.hasMany(UserHasRecipes, { foreignKey: "UserId" });
+// Recipe.hasMany(UserHasRecipe, { foreignKey: "RecipeId" });
+// User.hasMany(UserHasRecipe, { foreignKey: "UserId" });
 
 module.exports = {
   User,
   Recipe,
-  RecipeSteps,
+  RecipeStep,
   List,
   Ingredient,
   IngredientType,
-  RecipeHasIngredients,
-  ListHasIngredients,
-  UserHasRecipes,
+  RecipeHasIngredient,
+  ListHasIngredient,
+  UserHasRecipe,
 };

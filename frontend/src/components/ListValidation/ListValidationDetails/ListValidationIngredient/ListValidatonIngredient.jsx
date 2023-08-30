@@ -9,7 +9,7 @@ export default function ListValidationIngredient({
   ingredient,
   setEditingIngredient,
 }) {
-  const { id, name, quantity, unit } = ingredient;
+  const { id, name, quantity, unit, key } = ingredient;
   const [isEditing, setIsEditing] = useState(false);
   const [newQuantity, setNewQuantity] = useState(quantity);
 
@@ -22,7 +22,6 @@ export default function ListValidationIngredient({
   };
 
   useEffect(() => {
-    console.log(ingredient, "ingredient qui doit changer");
     setNewQuantity(quantity || "");
   }, [ingredient]);
 
@@ -43,9 +42,9 @@ export default function ListValidationIngredient({
   };
 
   return (
-    <div className="ingredient-detail-container">
+    <div key={key} className="ingredient-detail-container">
       <li
-        key={id}
+        key={key}
         className={`ingredient-detail ${isEditing ? "not-disable" : "disable"}`}
       >
         <h2 className="ingredient-name">{name}</h2>
@@ -90,6 +89,7 @@ export default function ListValidationIngredient({
 ListValidationIngredient.propTypes = {
   ingredient: PropTypes.shape({
     id: PropTypes.number,
+    key: PropTypes.number,
     name: PropTypes.string,
     quantity: PropTypes.number,
     unit: PropTypes.string,

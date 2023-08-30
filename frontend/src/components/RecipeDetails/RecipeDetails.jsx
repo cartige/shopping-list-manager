@@ -1,7 +1,7 @@
 import "./recipeDetails.scss";
 import { PropTypes } from "prop-types";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import UserContext from "../../contexts/UserContext";
 import Button from "../Button/Button";
@@ -12,25 +12,67 @@ export default function RecipeDetails({ recipe, onClick }) {
   const { steps } = recipe;
   const {
     currentUser: { user },
+    setMyRecipes,
+    myRecipes,
   } = useContext(UserContext);
+  const [isInMyRecipes, setIsInMyRecipes] = useState(
+    myRecipes.find((myRecipe) => myRecipe.id === recipe.id) !== undefined
+  );
 
-  const { setMyLists, myLists } = useContext(ListsContext);
+  useEffect(() => {
+    setIsInMyRecipes(
+      myRecipes.find((myRecipe) => myRecipe.id === recipe.id) !== undefined
+    );
+  }, [recipe, myRecipes]);
 
-  const handleRecipeDetailAction = () => {
-    axios
-      .post(
-        `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/recipes/${
-          recipe.id
-        }`
-      )
-      .then((recipeAdded) => {
-        setMyLists([...myLists, recipe]);
-        console.log(recipeAdded);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+  // const { setMyLists, myLists } = useContext(ListsContext);
+
+  const handleRecipeAction = () => {
+    if (recipe.myRecipe) {
+      axios
+        .delete(
+          `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/recipes/${
+            recipe.id
+          }`
+        )
+        .then(({ data }) => {
+          setMyRecipes(
+            myRecipes
+              .filter((myRecipe) => myRecipe.id !== recipe.id)
+              .sort((a, b) => a.id - b.id)
+          );
+          console.log(data);
+          debugger;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      axios
+        .post(
+          `${import.meta.env.VITE_BACKEND_URL}/user/${user.id}/recipes/${
+            recipe.id
+          }`
+        )
+        .then(({ data }) => {
+          setMyRecipes(
+            [...myRecipes, { ...recipe, myRecipe: true }].sort(
+              (a, b) => a.id - b.id
+            )
+          );
+          console.log(data);
+          debugger;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
   };
+  console.log(isInMyRecipes, "izfzrefzefjzefjzefdpziefe");
+
+  // const handleRecipeDel = () => {};
+
+  const handleRecipeUpdate = () => {};
   return (
     recipe && (
       <div className="recipe-details">
@@ -39,6 +81,7 @@ export default function RecipeDetails({ recipe, onClick }) {
           <img src={recipe.img} alt="recipe-img" className="recipe-img" />
           <div className="recipe-ingredients">
             <h1 className="recipe-ingredients-title">Ingredients</h1>
+            {isInMyRecipes}
             <ul className="recipe-ingredients-list">
               {recipe.Ingredients
                 ? recipe.Ingredients.map((ingredient) => {
@@ -81,15 +124,26 @@ export default function RecipeDetails({ recipe, onClick }) {
           </div>
         ) : null}
         <div className="btn-recipe-details-container">
-          <Button
-            type="button"
-            className="btn-recipe-details"
-            onClick={handleRecipeDetailAction}
-          >{`${
-            user && user.id === recipe.UserId
-              ? "Mettre à jour"
-              : "Ajouter à mes recettes"
-          }`}</Button>
+          {isInMyRecipes}
+          {user && user.id === recipe.UserId ? (
+            <Button
+              type="button"
+              className="btn-recipe-details"
+              onClick={handleRecipeUpdate}
+            >
+              Mettre à jour
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              className="btn-recipe-details"
+              onClick={handleRecipeAction}
+            >
+              {isInMyRecipes
+                ? "Retirer de mes recettes"
+                : "Ajouter à mes recettes"}
+            </Button>
+          )}
         </div>
       </div>
     )
@@ -104,6 +158,7 @@ RecipeDetails.propTypes = {
     isPublic: PropTypes.bool,
     description: PropTypes.string,
     UserId: PropTypes.number,
+    myRecipe: PropTypes.bool,
     steps: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.number,

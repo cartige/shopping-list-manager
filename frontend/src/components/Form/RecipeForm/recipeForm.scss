@@ -1,6 +1,6 @@
 .recipe-form {
   width: 80vw;
-  height: 80vh;
+  height: 86vh;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -34,13 +34,15 @@
       border: thin solid black;
       padding: 1.3rem;
       width: 35%;
-      height: 25rem;
+      min-height: 25rem;
+      max-height: 400px;
       overflow-y: scroll;
       .ingredient-list-form-title {
         font-size: 1.5rem;
         font-weight: bold;
         padding: 1rem;
         text-align: center;
+        border-bottom: 2px solid black;
       }
       .ingredient-list-form {
         display: flex;
@@ -64,13 +66,77 @@
     .recipe-steps-container {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      gap: 2rem;
       width: 40%;
+      .recipe-steps {
+        width: 100%;
+      }
+
+      .recipe-steps-btns {
+        display: flex;
+        gap: 1rem;
+      }
     }
   }
-
-  .button-container {
+  .submit-input-container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
+    gap: 1rem;
+    margin-right: 1rem;
+    .checkbox-container {
+      display: flex;
+      gap: 1rem;
+    }
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .recipe-form {
+    width: initial;
+    height: initial;
+    background-color: white;
+    .recipe-form-body {
+      flex-direction: column-reverse;
+      width: 100vw;
+      background-color: white;
+      margin: 2rem auto;
+      .ingredient-list-form-container {
+        width: initial;
+        height: fit-content;
+        min-height: 500px;
+        max-height: unset;
+        overflow-y: unset;
+      }
+
+      .recipe-steps-container {
+        display: flex;
+        flex-direction: column;
+        width: initial;
+        height: fit-content;
+      }
+    }
+    .submit-input-container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 7rem;
+      .checkbox-container {
+        display: flex;
+        gap: 1rem;
+      }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
   }
 }

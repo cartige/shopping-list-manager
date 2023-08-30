@@ -5,6 +5,7 @@ import ListValidationDetails from "./ListValidationDetails/ListValidationDetails
 import ListValidationAdd from "./ListValidationAdd/ListValidationAdd";
 import ListsContext from "../../contexts/ListsContext";
 import IngredientsContext from "../../contexts/IngredientsContext";
+import Button from "../Button/Button";
 
 export default function ListValidation({ isDisplay }) {
   const { listForm, setListForm } = useContext(ListsContext);
@@ -59,37 +60,29 @@ export default function ListValidation({ isDisplay }) {
     if (isDisplay) {
       const numberOfPages = [];
       let pageIndex = 0;
-      for (let i = 1; i <= ingredientsFiltered.length; i += 1) {
-        debugger;
+      for (let i = 0; i <= ingredientsFiltered.length; i += 1) {
         if (
-          i > 1 &&
+          i > 0 &&
           (ingredientsFiltered.length - i) % nbOfElementByPage === 0
         ) {
-          debugger;
           numberOfPages.push(pageIndex);
-          pageIndex += nbOfElementByPage;
+          pageIndex += 1;
         }
       }
       setPagesNumber(numberOfPages);
-      setCurrentPage(0);
+      if (ingredientsFiltered.length < nbOfElementByPage) {
+        setCurrentPage(0);
+      }
     }
   }, [ingredientsFiltered, isDisplay, nbOfElementByPage]);
 
   const handleFilter = (evt) => {
-    console.log(evt.target.name);
     const { value, name } = evt.target;
-    // let ingredients = [];
     if (name === "type-filter") {
-      // ({ ingredients } = allIngredientsByType.find(
-      //   (type) => type.id === parseInt(value, 10)
-      // ));
       setTypeId(parseInt(value, 10));
     } else {
       setFilterValue(value);
     }
-
-    // console.log(ingredients);
-    // setIngredientsFiltered(ingredients);
   };
 
   useEffect(() => {
@@ -110,8 +103,7 @@ export default function ListValidation({ isDisplay }) {
   }, [filterValue, typeId]);
 
   const handlePagination = (evt) => {
-    console.log(evt.target.value);
-    setCurrentPage(parseInt(evt.target.value, 10));
+    setCurrentPage((parseInt(evt.target.value, 10) - 1) * nbOfElementByPage);
   };
 
   const hNbrPerPage = (evt) => {
@@ -123,10 +115,6 @@ export default function ListValidation({ isDisplay }) {
     }
   };
 
-  // console.log(currentPage);
-  // console.log(ingredientsFiltered.slice(5, 10));
-
-  console.log(ingredientsFiltered);
   return (
     <div className="list-validation-container">
       <h1 className="list-validation-title">Récapitulatif</h1>
@@ -135,7 +123,7 @@ export default function ListValidation({ isDisplay }) {
 
       <div>
         <ul className="list-validation-details">
-          {listForm.ingredientByTypes.map((type) => {
+          {mapIngredientsByType(listForm.ingredients).map((type) => {
             const { id } = type;
             return (
               <div key={id} className="list-validation-detail-container">
@@ -165,7 +153,7 @@ export default function ListValidation({ isDisplay }) {
               >
                 <option value="0">Tous les elements</option>
                 {allIngredientsByType.map((ingredientType) => {
-                  const { name, id, ingredients } = ingredientType;
+                  const { name, id } = ingredientType;
                   return (
                     <option value={id} key={id}>
                       {name}
@@ -182,7 +170,7 @@ export default function ListValidation({ isDisplay }) {
                 <option value="page-number-select">Nbr par page</option>
                 {["5", "10", "15", "20"].map((nbr) => {
                   return (
-                    <option value={nbr} id={nbr}>
+                    <option value={nbr} id={nbr} key={nbr}>
                       {nbr}
                     </option>
                   );
@@ -191,8 +179,6 @@ export default function ListValidation({ isDisplay }) {
             </div>
 
             <ul className="add-element-list">
-              {/* {currentPage}
-              {currentPage + 1} */}
               {ingredientsFiltered
                 .slice(currentPage, currentPage + nbOfElementByPage)
                 .map((ingredient) => {
@@ -209,15 +195,26 @@ export default function ListValidation({ isDisplay }) {
 
             <div className="pagination">
               {pagesNumber.map((pageNumber, index) => {
+                const isActive =
+                  currentPage === 0
+                    ? pageNumber === currentPage
+                    : pageNumber ===
+                      currentPage -
+                        (nbOfElementByPage * pageNumber - pageNumber);
                 return (
-                  <button
+                  <Button
+                    key={pageNumber}
                     type="button"
-                    className="pagination-button"
+                    className={`pagination-button ${
+                      isActive
+                        ? "btn-pagination-selected"
+                        : "btn-pagination-not-selected"
+                    }`}
                     onClick={handlePagination}
-                    value={pageNumber}
+                    value={(pageNumber + 1).toString()}
                   >
-                    {index + 1}
-                  </button>
+                    {pageNumber + 1}
+                  </Button>
                 );
               })}
             </div>

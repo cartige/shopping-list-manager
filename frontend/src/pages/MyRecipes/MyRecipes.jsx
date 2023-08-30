@@ -3,7 +3,7 @@ import "./myRecipes.scss";
 // import "slick-carousel/slick/slick-theme.css";
 import "swiper/css";
 import "swiper/css/bundle";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlinePoweroff } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
@@ -40,8 +40,8 @@ export default function MyRecipes() {
   const { isShowing: showForm, toggle: toggleForm } = useModal();
   const [selectedRecipe, setSelectedRecipe] = useState(defaultRecipe);
   const [selectedMyRecipe, setSelectedMyRecipe] = useState(defaultRecipe);
+  const [recipesCopy, setRecipesCopy] = useState(recipes);
   const navigate = useNavigate();
-  // register();
 
   const hLogOut = () => {
     setCurrentUser({});
@@ -52,15 +52,21 @@ export default function MyRecipes() {
     });
     setTimeout(() => navigate("/"), 1000);
   };
-  console.log(selectedRecipe);
 
-  // const handleRecipeSelect = (stateName, recipe = defaultRecipe) => {
-  //   if (stateName === "recipes") {
-  //     setSelectedRecipe(recipe);
-  //   } else {
-  //     setSelectedMyRecipe(recipe);
-  //   }
-  // };
+  useEffect(() => {
+    setRecipesCopy(
+      recipesCopy.map((recipeCopy) => {
+        const foundMyRecipe =
+          myRecipes.find((myRecipe) => myRecipe.id === recipeCopy.id) !==
+          undefined;
+
+        if (foundMyRecipe) {
+          return { ...recipeCopy, myRecipe: true };
+        }
+        return { ...recipeCopy, myRecipe: false };
+      })
+    );
+  }, [myRecipes]);
 
   return (
     <div className="my-recipes">
@@ -149,7 +155,7 @@ export default function MyRecipes() {
         >
           Toutes les recettes
         </h2>
-        {recipes && (
+        {recipesCopy && (
           <PanelSwitcher
             open={!!selectedRecipe.id}
             isDisabled={!!selectedMyRecipe.id}
@@ -186,7 +192,7 @@ export default function MyRecipes() {
                   },
                 }}
               >
-                {recipes.map((recipe) => {
+                {recipesCopy.map((recipe) => {
                   return recipe.isPublic ? (
                     <SwiperSlide key={recipe.id}>
                       <Recipe
@@ -194,6 +200,7 @@ export default function MyRecipes() {
                         onClick={() => setSelectedRecipe(recipe)}
                         recipe={recipe}
                         display
+                        isAllRecipes
                       />
                     </SwiperSlide>
                   ) : null;
@@ -216,7 +223,7 @@ export default function MyRecipes() {
       <Modal
         isShowing={showForm}
         hide={toggleForm}
-        title="Ajouter un plat"
+        title="Création de recette"
         headerBackground="white"
         titleColor="black"
       >
